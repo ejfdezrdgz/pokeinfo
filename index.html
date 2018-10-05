@@ -13,7 +13,43 @@
 <body>
     <div>
         <h2>PokéInfo Enciclopedia</h2>
-        <section id="contenido"> </section>
+        <div>
+            <p>Find Pokémon</p>
+            <div>
+                <input type="text" name="searchBar" id="searchBar" placeholder="Pokémon name">
+            </div>
+            <div>
+                <label for="orderSel">Order by:</label>
+                <select name="orderSel" id="orderSel">
+                    <option value="id">ID</option>
+                    <option value="hp">HP</option>
+                    <option value="speed">Speed</option>
+                    <option value="attack">Attack</option>
+                    <option value="defense">Defense</option>
+                    <option value="special-attack">Special Attack</option>
+                    <option value="special-defense">Special Defense</option>
+                </select>
+                <input type="checkbox" name="sortdir" id="sortdir">Descendant sort
+            </div>
+            <div>
+                <label for="typeSel">Type 1:</label>
+                <select name="typeSel" id="type1Sel"></select>
+            </div>
+            <div>
+                <label for="typeSel">Type 2:</label>
+                <select name="typeSel" id="type2Sel"></select>
+            </div>
+            <div>
+                <input type="checkbox" name="exactorder" id="exactorder">Exact order
+            </div>
+        </div>
+        <hr>
+        <section id="content"> </section>
+        <div class="loader">
+            <img id="pokelogo" src="./resources/img/Pokémon_logo.svg" alt="[insert here Pokémon logo]">
+            <img id="pikaface" src="./resources/img/pikachu.png" alt="[insert here Pikachu face]">
+            <span>Loading Pokémon world...</span>
+        </div>
     </div>
 </body>
 

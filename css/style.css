@@ -1,4 +1,4 @@
-*{
+* {
     font-family: "Segoe UI";
 }
 
@@ -25,10 +25,37 @@ h2 {
     justify-content: center;
 }
 
-#contenido {
+#content {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+}
+
+#pikaface {
+    width: fit-content;
+    height: fit-content;
+    width: 100px;
+    height: 100px;
+    animation-name: breathing;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes breathing {
+    0% {opacity: 1}
+    50% {opacity: 0}
+    100% {opacity: 1}
+}
+
+#pokelogo {
+    height: 150px;
+}
+
+.loader {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .tooltip {
@@ -37,16 +64,16 @@ h2 {
 
 .tooltip .tooltiptext {
     visibility: hidden;
-    width: 140px;
+    width: 150px;
     background-color: #555;
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 5px 5px;
+    padding: 10px 5px;
     position: absolute;
     z-index: 1;
     bottom: 100%;
-    left: 35%;
+    left: 30%;
     margin-left: -60px;
     opacity: 0;
     transition: opacity 0.3s;

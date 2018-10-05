@@ -1,9 +1,27 @@
 export class Pokemon {
-    constructor(id, name, img, types, stats){
+    constructor(id, name, img, types, stats) {
         this.id = id;
         this.name = name;
         this.img = img;
         this.types = types;
         this.stats = stats;
+    }
+
+    getTypes() {
+        var types = "";
+        if (this.types["secondary"] != undefined) {
+            types = this.types["primary"] + "/" + this.types["secondary"];
+        } else {
+            types = this.types["primary"];
+        }
+        return types;
+    }
+
+    getStats() {
+        var stats = "";
+        for (const key in this.stats) {
+            stats += key + ": " + this.stats[key] + "<br>";
+        }
+        return stats;
     }
 }

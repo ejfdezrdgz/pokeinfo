@@ -1,33 +1,16 @@
 import { Pokemon } from "./pokemon.js";
-
-const type_back = `background: _COLOR1_;
-background: linear-gradient(-45deg, _COLOR1_ 0%, _COLOR1_ 40%, _COLOR2_ 60%, _COLOR2_ 100%);`;
-const type_colors = {
-    "normal": "#A8A878",
-    "fighting": "#C03028",
-    "flying": "#A890F0",
-    "poison": "#A040A0",
-    "ground": "#E0C068",
-    "rock": "#B8A038",
-    "bug": "#A8B820",
-    "ghost": "#705898",
-    "steel": "#B8B8D0",
-    "fire": "#F08030",
-    "water": "#6890F0",
-    "grass": "#78C850",
-    "electric": "#F8D030",
-    "psychic": "#F85888",
-    "ice": "#98D8D8",
-    "dragon": "#7038F8",
-    "dark": "#705848",
-    "fairy": "#EE99AC",
-    "unknown": "#68A090",
-    "shadow": "#68A090"
-}
+import { type_colors } from "./constants.js";
+import { back_colors, sortPokemon } from "./functions.js";
 
 window.onload = function() {
-    var list = [];
-    var section = document.getElementById("contenido");
+    var stat;
+    var pk_list = [];
+    var searchBar = document.getElementById("searchBar");
+    var orderSel = document.getElementById("orderSel");
+    var sortDir = document.getElementById("sortdir");
+    var ordercheck = document.getElementById("exactorder");
+    var typeSels = document.getElementsByName("typeSel");
+    var section = document.getElementById("content");
     var xml = new XMLHttpRequest();
     var url = "https://pokeapi.co/api/v2/pokemon/";
     var url_loc = "https://pokeapi.co/api/v2/pokemon-species/"
@@ -38,8 +21,104 @@ window.onload = function() {
     xml.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var r = JSON.parse(this.response);
+            // loadPokemonList(r.results);
             loadPokemonList(r.results.slice(0, 151));
+            // loadPokemonList(r.results.slice(0, 900));
         }
+    }
+
+    typeSels.forEach(selector => {
+        var opt = document.createElement("option");
+        opt.innerText = "-- ANY TYPE --";
+        opt.value = "any";
+        opt.selected = true;
+        selector.appendChild(opt);
+        for (const key in type_colors) {
+            var opt = document.createElement("option");
+            opt.value = key;
+            opt.innerText = key;
+            selector.appendChild(opt);
+        }
+        selector.onchange = filterPokemon;
+    });
+    ordercheck.onchange = filterPokemon;
+    searchBar.onkeyup = searchPokemon;
+    sortDir.onchange = orderPokemon;
+    orderSel.onchange = orderPokemon;
+    
+    function orderPokemon() {
+        stat = "";
+        if (orderSel.value != "id") {
+            stat = orderSel.value;
+        }
+        loadPokemonInfo(pk_list.sort(orderByStat));
+    }
+
+    function orderById(a, b) {
+        if (sortDir.checked) {
+            if (a.stats["id"] > b.stats["id"]) return 1
+            else if (a.stats["id"] < b.stats["id"]) return -1
+            else return 0
+        } else {
+            if (a.stats["id"] > b.stats["id"]) return -1
+            else if (a.stats["id"] < b.stats["id"]) return 1
+            else return 0
+        }
+    }
+
+    function orderByStat(a, b) {
+        if (sortDir.checked) {
+            if (a.stats[stat] > b.stats[stat]) return 1
+            else if (a.stats[stat] < b.stats[stat]) return -1
+            else return 0
+        } else {
+            if (a.stats[stat] > b.stats[stat]) return -1
+            else if (a.stats[stat] < b.stats[stat]) return 1
+            else return 0
+        }
+    }
+
+    function filterPokemon() {
+        var sel1Value = document.getElementById("type1Sel").value;
+        var sel2Value = document.getElementById("type2Sel").value;
+        if (sel1Value == sel2Value) {
+            sel2Value = "any";
+        }
+        var list = [];
+        if (ordercheck.checked == true) {
+            pk_list.forEach(pokemon => {
+                if (sel1Value == "any" && sel2Value == "any") {
+                    list.push(pokemon);
+                } else if (pokemon.types["primary"] == sel1Value && pokemon.types["secondary"] == sel2Value) {
+                    list.push(pokemon);
+                } else if ((pokemon.types["primary"] == sel1Value && sel2Value == "any") || ((pokemon.types["secondary"] == sel2Value && sel1Value == "any"))) {
+                    list.push(pokemon);
+                }
+            })
+        } else {
+            pk_list.forEach(pokemon => {
+                if (sel1Value == "any" && sel2Value == "any") {
+                    list.push(pokemon);
+                } else if (sel1Value != "any" && sel2Value != "any") {
+                    if (pokemon.types["primary"] == sel1Value && pokemon.types["secondary"] == sel2Value) {
+                        list.push(pokemon);
+                    }
+                } else if ((sel1Value == "any" && sel2Value != "any") || (sel1Value != "any" && sel2Value == "any")) {
+                    if (pokemon.types["primary"] == sel1Value || pokemon.types["primary"] == sel2Value || pokemon.types["secondary"] == sel1Value || pokemon.types["secondary"] == sel2Value) {
+                        list.push(pokemon);
+                    }
+                }
+            });
+        }
+        loadPokemonInfo(list);
+    }
+
+    function searchPokemon() {
+        loadPokemonInfo(pk_list.filter(pokemon => {
+            if (pokemon.name.toLowerCase().search(searchBar.value.toLowerCase()) >= 0) {
+                return true;
+            }
+        }));
     }
 
     function loadPokemonList(pokelist) {
@@ -64,18 +143,24 @@ window.onload = function() {
                         stats[el.stat.name] = el.base_stat
                     });
                     var pk = new Pokemon(rp.id, rp.name, rp.sprites.front_default, types, stats);
-                    list.push(pk);
-                    if (list.length >= 151) {
-                        list.sort(sortPokemon);
-                        console.log(list);
-                        loadPokemonInfo();
-                    }
+                    pk_list.push(pk);
+
+                    pk_list.sort(sortPokemon);
+                    loadPokemonInfo(pk_list);
+
+                    // if (pk_list.length >= 151) {
+                    //     pk_list.sort(sortPokemon);
+                    //     // console.log(pk_list);
+                    //     loadPokemonInfo(pk_list);
+                    // }
                 }
             }
         });
     }
 
-    function loadPokemonInfo() {
+    function loadPokemonInfo(list) {
+        section.innerHTML = "";
+        document.getElementsByClassName("loader")[0].setAttribute("style", "display: none");
         list.forEach(pokemon => {
             var card = document.createElement("article");
             var a = document.createElement("a");
@@ -83,7 +168,7 @@ window.onload = function() {
             var img = document.createElement("img");
             img.src = pokemon.img;
             var span = document.createElement("span");
-            span.innerHTML = `Nombre: ${pokemon.name}`;
+            span.innerHTML = `Nombre:<br> ${pokemon.name}<hr>Types:<br> ${pokemon.getTypes()}<hr>Stats:<br> ${pokemon.getStats()}`;
             span.className = "tooltiptext";
             card.appendChild(img);
             card.appendChild(a);
@@ -92,23 +177,5 @@ window.onload = function() {
             card.style = back_colors(pokemon);
             section.appendChild(card);
         })
-    }
-
-    function back_colors(pk) {
-        var style = type_back;
-        var cp, cs;
-        cp = cs = type_colors[pk.types["primary"]];
-        if (pk.types["secondary"] != undefined) {
-            cs = type_colors[pk.types["secondary"]];
-        }
-        style = style.split('_COLOR1_').join(cp);
-        style = style.split('_COLOR2_').join(cs);
-        return style;
-    }
-
-    function sortPokemon(a, b) {
-        if (a.id > b.id) return 1
-        else if (a.id < b.id) return -1
-        else return 0
     }
 }
