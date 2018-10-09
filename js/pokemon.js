@@ -24,4 +24,8 @@ export class Pokemon {
         }
         return stats;
     }
+
+    setDescription(desc) {
+        this.description = desc;
+    }
 }
