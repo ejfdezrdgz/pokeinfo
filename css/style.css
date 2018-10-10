@@ -3,7 +3,6 @@
 }
 
 article {
-    cursor: pointer;
     margin: 5px;
     width: 95px;
     height: 120px;
@@ -34,6 +33,11 @@ p {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+}
+
+#evolP {
+    margin: 0;
+    margin-bottom: 10px;
 }
 
 #modalTitle {
@@ -68,6 +72,11 @@ p {
     height: 150px;
 }
 
+.bodiv {
+    margin: 0 auto;
+    max-width: 1300px;
+}
+
 .close {
     top: -10px;
     position: relative;
@@ -81,6 +90,24 @@ p {
 .close:focus {
     color: #000;
     text-decoration: none;
+    cursor: pointer;
+}
+
+.descP {
+    margin: 5px;
+    background-color: gainsboro;
+}
+
+.evolBody {
+    display: flex;
+    justify-content: center;
+}
+
+.evolBody p {
+    margin: 2px;
+}
+
+.mainArticle {
     cursor: pointer;
 }
 
@@ -106,11 +133,65 @@ p {
     width: 80%;
 }
 
+.modalCont {
+    display: flex;
+    flex-direction: column;
+}
+
+.modalEvol {
+    margin: 5px;
+    text-align: center;
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.modalStats {
+    background-color: #888;
+}
+
 .loader {
     display: flex;
     text-align: center;
     align-items: center;
     flex-direction: column;
+}
+
+.searchDiv {
+    width: 85%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.searchDiv div {
+    display: flex;
+    flex-direction: column;
+}
+
+.searchDiv div div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.searchDiv div div * {
+    margin: 3px;
+}
+
+.searchHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.searchHeader p {
+    width: 15%;
+    text-align: center;
 }
 
 .tooltip {

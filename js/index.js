@@ -2,30 +2,42 @@ import { Pokemon } from "./pokemon.js";
 import { type_colors } from "./constants.js";
 import { back_colors, sortPokemon } from "./functions.js";
 
-const GEN = { "1": 151, "2": 251, "3": 386, "4": 494 };
+const GEN = { "1": 151, "2": 251, "3": 386, "4": 494, "5": 649 };
 
 window.onload = function() {
     var pk_list = [];
     var pk_num = GEN["1"];
+    var storage = window.localStorage;
     var searchBar = document.getElementById("searchBar");
     var orderSel = document.getElementById("orderSel");
     var sortDir = document.getElementById("sortdir");
     var ordercheck = document.getElementById("exactorder");
     var typeSels = document.getElementsByName("typeSel");
     var section = document.getElementById("content");
-    var xml = new XMLHttpRequest();
     var url = "https://pokeapi.co/api/v2/pokemon/";
-    var url_loc = "https://pokeapi.co/api/v2/pokemon-species/"
+    var url_sp = "https://pokeapi.co/api/v2/pokemon-species/"
+    var url_evo = "https://pokeapi.co/api/v2/evolution-chain/";
     var loc_code = "en";
 
-    xml.open("GET", url, true);
-    xml.send(null);
-
-    xml.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var r = JSON.parse(this.response);
-            // loadPokemonList(r.results);
-            loadPokemonList(r.results.slice(0, pk_num));
+    if (storage.getItem("pkStrg") != null) {
+        var pkStrg = JSON.parse(storage.getItem("pkStrg"));
+        pkStrg.forEach(pokemon => {
+            var pk = new Pokemon(pokemon.id, pokemon.name, pokemon.img, pokemon.types, pokemon.stats);
+            if (pokemon["description"] != undefined) pk.setDescription(pokemon.description);
+            if (pokemon["evolChain"] != undefined) pk.setEvolChain(pokemon.evolChain);
+            pk_list.push(pk);
+        });
+        loadPokemonInfo(pk_list);
+    } else {
+        var xml = new XMLHttpRequest();
+        xml.open("GET", url, true);
+        xml.send(null);
+        xml.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var r = JSON.parse(this.response);
+                // loadPokemonList(r.results);
+                loadPokemonList(r.results.slice(0, pk_num));
+            }
         }
     }
 
@@ -110,42 +122,112 @@ window.onload = function() {
 
     function eventCard(evt) {
         var id = evt.currentTarget.id.slice(6);
-        var xmlobj = new XMLHttpRequest();
-        url = url_loc + id + "/";
-        xmlobj.open("GET", url, true);
-        xmlobj.send(null);
-        xmlobj.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var pkInfo = JSON.parse(this.response);
-                var pokemon = pk_list.find(pk => {
-                    if (pk.id == id) return true;
-                })
-                var dList = pkInfo.flavor_text_entries.filter(d => {
-                    if (d.language.name == loc_code) return true;
-                })
-                pokemon.name = pkInfo.names.filter(n => {
-                    if (n.language.name == loc_code) return true;
-                })[0].name;
-                pokemon.setDescription(dList);
-                modal.style.display = "block";
-                document.getElementById("detailCard").innerHTML = "";
-                document.getElementById("detailCard").appendChild(htmlCard(pokemon));
+        var pokemon = pk_list.filter(pk => {
+            if (pk.id == id) return true;
+        })[0]
+        if (pokemon["evolChain"] != undefined) {
+            buildModal(pokemon);
+        } else {
+            var xmlobj = new XMLHttpRequest();
+            url = url_sp + id + "/";
+            xmlobj.open("GET", url, true);
+            xmlobj.send(null);
+            xmlobj.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var pkInfo = JSON.parse(this.response);
+                    var dList = pkInfo.flavor_text_entries.filter(d => {
+                        if (d.language.name == loc_code) return true;
+                    })
+                    pokemon.name = pkInfo.names.filter(n => {
+                        if (n.language.name == loc_code) return true;
+                    })[0].name;
+                    pokemon.setDescription(dList);
 
-                console.log(pokemon);
+                    var xmlevol = new XMLHttpRequest();
+                    url = pkInfo.evolution_chain.url;
+                    xmlevol.open("GET", url, true);
+                    xmlevol.send(null);
+                    xmlevol.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var evolData = JSON.parse(this.response)["chain"];
+                            if (evolData != undefined) {
+                                var evolChain = [];
+                                while (evolData["evolves_to"].length > 0) {
+                                    evolChain.push(evolData["species"]["name"]);
+                                    if (evolData["evolves_to"].length > 0) {
+                                        evolData = evolData["evolves_to"][0];
+                                    }
+                                }
+                                evolChain.push(evolData["species"]["name"]);
+                                pokemon.setEvolChain(evolChain);
+                                storage.setItem("pkStrg", JSON.stringify(pk_list));
+                                buildModal(pokemon);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
-    function htmlCard(pokemon) {
+    function buildModal(pokemon) {
+        modal.style.display = "block";
+        document.getElementById("detailCard").innerHTML = "";
+        document.getElementById("detailCard").appendChild(htmlModal(pokemon));
+    }
+
+    function htmlModal(pokemon) {
+        var content = document.createElement("div");
+        content.className = "modalCont";
+        var header = document.createElement("div");
+        header.className = "modalHeader";
+        var body = document.createElement("div");
         var card = document.createElement("article");
+        card.style = back_colors(pokemon);
+        var separator = document.createElement("hr");
         var p = document.createElement("p");
         p.innerText = pokemon.name;
         var img = document.createElement("img");
         img.src = pokemon.img;
+        var stats = document.createElement("div");
+        stats.className = "modalStats";
+        // Add stats
+        var evol = document.createElement("div");
+        evol.className = "modalEvol";
+        var ep = document.createElement("h4");
+        ep.id = "evolP";
+        ep.innerText = "Evolution chain";
+        evol.appendChild(ep);
+        var evolBody = document.createElement("div");
+        evolBody.className = "evolBody";
+        pokemon.evolChain.forEach(el => {
+            var p = document.createElement("p");
+            p.innerText = el;
+            var sep = document.createElement("p");
+            sep.innerText = "→";
+            evolBody.appendChild(p);
+            evolBody.appendChild(sep);
+        });
+        evolBody.removeChild(evolBody.lastChild);
+        evol.appendChild(evolBody);
+        var desc = document.createElement("div");
+        pokemon.description.forEach(d => {
+            var p = document.createElement("p");
+            var text = d.flavor_text.split("\n").join(" ");
+            p.innerText = text;
+            p.className = "descP"
+            desc.appendChild(p);
+        });
         card.appendChild(img);
         card.appendChild(p);
-        card.style = back_colors(pokemon);
-        return card;
+        header.appendChild(card);
+        header.appendChild(stats);
+        header.appendChild(evol);
+        body.appendChild(desc);
+        content.appendChild(header);
+        content.appendChild(separator);
+        content.appendChild(body);
+        return content;
     }
 
     function loadPokemonList(pokelist) {
@@ -175,8 +257,8 @@ window.onload = function() {
                     // console.log(pk_list);
 
                     if (pk_list.length >= pk_num) {
-                        pk_list.sort(sortPokemon);
-                        loadPokemonInfo(pk_list);
+                        loadPokemonInfo(pk_list.sort(sortPokemon));
+                        storage.setItem("pkStrg", JSON.stringify(pk_list));
                     }
                 }
             }
@@ -190,6 +272,8 @@ window.onload = function() {
             var card = document.createElement("article");
             card.onclick = eventCard;
             card.id = "pkcard" + pokemon.id;
+            card.className = "tooltip mainArticle";
+            card.style = back_colors(pokemon);
             var p = document.createElement("p");
             p.innerText = pokemon.name;
             var img = document.createElement("img");
@@ -200,8 +284,6 @@ window.onload = function() {
             card.appendChild(img);
             card.appendChild(p);
             card.appendChild(span);
-            card.className = "tooltip";
-            card.style = back_colors(pokemon);
             section.appendChild(card);
         })
     }

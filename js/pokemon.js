@@ -25,6 +25,10 @@ export class Pokemon {
         return stats;
     }
 
+    setEvolChain(evolChain) {
+        this.evolChain = evolChain;
+    }
+
     setDescription(desc) {
         this.description = desc;
     }
