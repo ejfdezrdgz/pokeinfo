@@ -13,12 +13,24 @@
 
 <body>
     <div class="bodiv">
-        <h2>PokéInfo Enciclopedia</h2>
+        <h2 class="pageTitle">PokéInfo Enciclopedia</h2>
         <div class="searchHeader">
             <p>Find Pokémon</p>
             <div class="searchDiv">
                 <div>
                     <input type="text" name="searchBar" id="searchBar" placeholder="Pokémon name">
+                    <hr>
+                    <div>Generations</div>
+                    <div>
+                        <span class="genSel genSelOn" id="gen1">1</span>
+                        <span class="genSel genSelOn" id="gen2">2</span>
+                        <span class="genSel genSelOn" id="gen3">3</span>
+                        <span class="genSel genSelOn" id="gen4">4</span>
+                        <span class="genSel genSelOn" id="gen5">5</span>
+                        <span class="genSel genSelOn" id="gen6">6</span>
+                        <span class="genSel genSelOn" id="gen7">7</span>
+                        <span class="genSel genSelOff" id="genSP">SP</span>
+                    </div>
                 </div>
                 <div>
                     <div>
@@ -46,8 +58,6 @@
                         <label for="typeSel">Type 2:</label>
                         <select name="typeSel" id="type2Sel"></select>
                     </div>
-                </div>
-                <div>
                     <div>
                         <input type="checkbox" name="exactorder" id="exactorder">Exact order
                     </div>
@@ -55,7 +65,7 @@
             </div>
         </div>
         <hr>
-        <section id="content"> </section>
+        <section class="pageContent" id="content"> </section>
         <div id="cardModal" class="modal">
             <div class="modal-content">
                 <div>

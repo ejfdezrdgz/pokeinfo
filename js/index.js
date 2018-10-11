@@ -2,13 +2,18 @@ import { Pokemon } from "./pokemon.js";
 import { type_colors } from "./constants.js";
 import { back_colors, sortPokemon } from "./functions.js";
 
-const GEN = { "1": 151, "2": 251, "3": 386, "4": 494, "5": 649 };
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+}
+
+const GEN = { "1": 151, "2": 251, "3": 386, "4": 494, "5": 649, "6": 721, "7": 802, "SP": 949 };
 
 window.onload = function() {
     var pk_list = [];
-    var pk_num = GEN["1"];
+    var pk_num = GEN["7"];
     var storage = window.localStorage;
     var searchBar = document.getElementById("searchBar");
+    var genSels = document.getElementsByClassName("genSel");
     var orderSel = document.getElementById("orderSel");
     var sortDir = document.getElementById("sortdir");
     var ordercheck = document.getElementById("exactorder");
@@ -35,11 +40,20 @@ window.onload = function() {
         xml.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 var r = JSON.parse(this.response);
-                // loadPokemonList(r.results);
                 loadPokemonList(r.results.slice(0, pk_num));
             }
         }
     }
+
+    var gens = [];
+    var selectedGen = document.getElementsByClassName("genSelOn");
+    for (const key in selectedGen) {
+        if (selectedGen.hasOwnProperty(key)) {
+            const el = selectedGen[key];
+            gens.push(el.id.substring(3));
+        }
+    }
+    console.log(gens);
 
     typeSels.forEach(selector => {
         var opt = document.createElement("option");
@@ -55,6 +69,12 @@ window.onload = function() {
         }
         selector.onchange = filterPk;
     });
+    for (const key in genSels) {
+        if (genSels.hasOwnProperty(key)) {
+            const el = genSels[key];
+            el.onclick = switchGen;
+        }
+    }
     ordercheck.onchange = filterPk;
     searchBar.onkeyup = filterPk;
     sortDir.onchange = filterPk;
@@ -170,6 +190,16 @@ window.onload = function() {
         }
     }
 
+    function switchGen(evt) {
+        var sel = evt.currentTarget;
+        if (sel.className == "genSel genSelOn") {
+            sel.className = "genSel genSelOff";
+        } else {
+            sel.className = "genSel genSelOn";
+        }
+
+    }
+
     function buildModal(pokemon) {
         modal.style.display = "block";
         document.getElementById("detailCard").innerHTML = "";
@@ -184,6 +214,7 @@ window.onload = function() {
         var body = document.createElement("div");
         var card = document.createElement("article");
         card.style = back_colors(pokemon);
+        card.className = "modalCard";
         var separator = document.createElement("hr");
         var p = document.createElement("p");
         p.innerText = pokemon.name;
@@ -191,7 +222,7 @@ window.onload = function() {
         img.src = pokemon.img;
         var stats = document.createElement("div");
         stats.className = "modalStats";
-        // Add stats
+        // TODO Add stats
         var evol = document.createElement("div");
         evol.className = "modalEvol";
         var ep = document.createElement("h4");

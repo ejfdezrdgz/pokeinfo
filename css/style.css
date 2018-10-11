@@ -12,6 +12,11 @@ article {
     align-items: center;
 }
 
+article img {
+    max-width: 96px;
+    max-height: 96px;
+}
+
 body {
     background-color: gainsboro;
 }
@@ -72,6 +77,12 @@ p {
     height: 150px;
 }
 
+#searchBar {
+    width: 85%;
+    margin: 0 auto;
+    max-width: 200px;
+}
+
 .bodiv {
     margin: 0 auto;
     max-width: 1300px;
@@ -107,6 +118,26 @@ p {
     margin: 2px;
 }
 
+.genSel {
+    width: 19px;
+    height: 19px;
+    cursor: pointer;
+    font-weight: 500;
+    line-height: 17px;
+    text-align: center;
+    border-radius: 5px;
+    -webkit-user-select: none;
+}
+
+.genSelOn {
+    border: 1px solid green;
+    background-color: lightgreen;
+}
+
+.genSelOff {
+    border: 1px solid red;
+    background-color: lightsalmon;
+}
 .mainArticle {
     cursor: pointer;
 }
@@ -115,7 +146,7 @@ p {
     display: none;
     position: fixed;
     z-index: 1;
-    padding-top: 100px;
+    padding-top: 40px;
     left: 0;
     top: 0;
     width: 100%;
@@ -131,6 +162,10 @@ p {
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+}
+
+.modalCard {
+    -webkit-user-select: none;
 }
 
 .modalCont {
@@ -160,11 +195,19 @@ p {
     flex-direction: column;
 }
 
+.pageContent {
+    -webkit-user-select: none;
+}
+
+.pageTitle {
+    -webkit-user-select: none;
+}
+
 .searchDiv {
     width: 85%;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 
 .searchDiv div {
@@ -186,6 +229,7 @@ p {
 .searchHeader {
     display: flex;
     align-items: center;
+    -webkit-user-select: none;
     justify-content: space-between;
 }
 
