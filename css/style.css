@@ -88,6 +88,28 @@ p {
     max-width: 1300px;
 }
 
+.cardIdCorner {
+    width: 22px;
+    top: -117px;
+    right: -36px;
+    font-size: 9pt;
+    line-height: 15px;
+    text-align: center;
+    position: relative;
+    background-color: yellow;
+}
+
+.cardGenCorner {
+    width: 22px;
+    top: -132px;
+    left: -36px;
+    font-size: 9pt;
+    line-height: 15px;
+    text-align: center;
+    position: relative;
+    background-color: yellow;
+}
+
 .close {
     top: -10px;
     position: relative;

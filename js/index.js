@@ -1,14 +1,17 @@
 import { Pokemon } from "./pokemon.js";
 import { type_colors } from "./constants.js";
-import { back_colors, sortPokemon } from "./functions.js";
+import { back_colors, sortPokemon, rangeCompress, rangePair } from "./functions.js";
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-}
+// if ('serviceWorker' in navigator) {
+//     navigator.serviceWorker.register('sw.js');
+// }
 
 const GEN = { "1": 151, "2": 251, "3": 386, "4": 494, "5": 649, "6": 721, "7": 802, "SP": 949 };
+const RANGEDIC = { "1": [0, 151], "2": [152, 251], "3": [252, 386], "4": [387, 494], "5": [495, 649], "6": [650, 721], "7": [722, 802], "SP": [803, 949] };
 
 window.onload = function() {
+    var gens = [];
+    var range = [];
     var pk_list = [];
     var pk_num = GEN["7"];
     var storage = window.localStorage;
@@ -45,15 +48,7 @@ window.onload = function() {
         }
     }
 
-    var gens = [];
-    var selectedGen = document.getElementsByClassName("genSelOn");
-    for (const key in selectedGen) {
-        if (selectedGen.hasOwnProperty(key)) {
-            const el = selectedGen[key];
-            gens.push(el.id.substring(3));
-        }
-    }
-    console.log(gens);
+    // TODO Mobile adaptations
 
     typeSels.forEach(selector => {
         var opt = document.createElement("option");
@@ -72,13 +67,23 @@ window.onload = function() {
     for (const key in genSels) {
         if (genSels.hasOwnProperty(key)) {
             const el = genSels[key];
-            el.onclick = switchGen;
+            el.onclick = changeGenCol;
         }
     }
-    ordercheck.onchange = filterPk;
-    searchBar.onkeyup = filterPk;
-    sortDir.onchange = filterPk;
-    orderSel.onchange = filterPk;
+    ordercheck.onchange = filterGen;
+    searchBar.onkeyup = filterGen;
+    sortDir.onchange = filterGen;
+    orderSel.onchange = filterGen;
+
+    function checkRange(pokemon) {
+        var r = false;
+        range.forEach(subrange => {
+            if (subrange[0] <= pokemon.id && subrange[1] >= pokemon.id) {
+                r = true;
+            }
+        });
+        return r;
+    }
 
     function filterPk() {
         var pkName = searchBar.value;
@@ -116,7 +121,7 @@ window.onload = function() {
                     }
                 }
             }
-        }).sort(orderPk))
+        }).filter(pokemon => { return checkRange(pokemon)}).sort(orderPk))
     }
 
     function orderPk(a, b) {
@@ -190,14 +195,34 @@ window.onload = function() {
         }
     }
 
-    function switchGen(evt) {
+    function changeGenCol(evt) {
         var sel = evt.currentTarget;
         if (sel.className == "genSel genSelOn") {
             sel.className = "genSel genSelOff";
         } else {
             sel.className = "genSel genSelOn";
         }
+        filterGen();
+    }
 
+    function filterGen() {
+        gens = [];
+        range = [];
+        var selectedGen = document.getElementsByClassName("genSelOn");
+        for (const key in selectedGen) {
+            if (selectedGen.hasOwnProperty(key)) {
+                const el = selectedGen[key];
+                gens.push(el.id.substring(3));
+            }
+        }
+        gens.forEach(gen => {
+            RANGEDIC[gen].forEach(el => {
+                range.push(el);
+            });
+        });
+        range = rangeCompress(range);
+        range = rangePair(range);
+        filterPk();
     }
 
     function buildModal(pokemon) {
@@ -305,6 +330,12 @@ window.onload = function() {
             card.id = "pkcard" + pokemon.id;
             card.className = "tooltip mainArticle";
             card.style = back_colors(pokemon);
+            var idCorner = document.createElement("div");
+            idCorner.innerHTML = pokemon.id;
+            idCorner.className = "cardIdCorner";
+            var genCorner = document.createElement("div");
+            genCorner.innerHTML = "VII";
+            genCorner.className = "cardGenCorner";
             var p = document.createElement("p");
             p.innerText = pokemon.name;
             var img = document.createElement("img");
@@ -314,6 +345,8 @@ window.onload = function() {
             span.className = "tooltiptext";
             card.appendChild(img);
             card.appendChild(p);
+            card.appendChild(idCorner);
+            card.appendChild(genCorner);
             card.appendChild(span);
             section.appendChild(card);
         })
