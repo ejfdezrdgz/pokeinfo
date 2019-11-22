@@ -1,5 +1,5 @@
 self.addEventListener('install', event => {
-    console.log("instalando service worker...")
+    console.log("Instalando service worker...")
     event.waitUntil(
         caches.open("v1")
         .then(cache => cache.addAll(

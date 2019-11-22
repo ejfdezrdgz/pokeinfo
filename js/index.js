@@ -6,14 +6,14 @@ import { back_colors, sortPokemon, rangeCompress, rangePair } from "./functions.
 //     navigator.serviceWorker.register('sw.js');
 // }
 
-const GEN = { "1": 151, "2": 251, "3": 386, "4": 494, "5": 649, "6": 721, "7": 802, "SP": 949 };
-const RANGEDIC = { "1": [0, 151], "2": [152, 251], "3": [252, 386], "4": [387, 494], "5": [495, 649], "6": [650, 721], "7": [722, 802], "SP": [803, 949] };
+const GEN = { "1": 151, "2": 251, "3": 386, "4": 494, "5": 649, "6": 721, "7": 802, "NEW": 807, "SP": 10157 };
+const RANGEDIC = { "1": [0, 151], "2": [152, 251], "3": [252, 386], "4": [387, 494], "5": [495, 649], "6": [650, 721], "7": [722, 802], "NEW": [803, 807], "SP": [10001, 10157] };
 
-window.onload = function() {
+window.onload = function () {
     var gens = [];
     var range = [];
     var pk_list = [];
-    var pk_num = GEN["7"];
+    var pk_num = GEN["NEW"];
     var storage = window.localStorage;
     var searchBar = document.getElementById("searchBar");
     var genSels = document.getElementsByClassName("genSel");
@@ -22,10 +22,10 @@ window.onload = function() {
     var ordercheck = document.getElementById("exactorder");
     var typeSels = document.getElementsByName("typeSel");
     var section = document.getElementById("content");
-    var url = "https://pokeapi.co/api/v2/pokemon/";
+    var url = "https://pokeapi.co/api/v2/pokemon/?limit=1000";
     var url_sp = "https://pokeapi.co/api/v2/pokemon-species/"
     var url_evo = "https://pokeapi.co/api/v2/evolution-chain/";
-    var loc_code = "en";
+    var loc_code = "es";
 
     if (storage.getItem("pkStrg") != null) {
         var pkStrg = JSON.parse(storage.getItem("pkStrg"));
@@ -40,9 +40,10 @@ window.onload = function() {
         var xml = new XMLHttpRequest();
         xml.open("GET", url, true);
         xml.send(null);
-        xml.onreadystatechange = function() {
+        xml.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var r = JSON.parse(this.response);
+                console.log(r.results);
                 loadPokemonList(r.results.slice(0, pk_num));
             }
         }
@@ -121,7 +122,7 @@ window.onload = function() {
                     }
                 }
             }
-        }).filter(pokemon => { return checkRange(pokemon)}).sort(orderPk))
+        }).filter(pokemon => { return checkRange(pokemon) }).sort(orderPk))
     }
 
     function orderPk(a, b) {
@@ -157,7 +158,7 @@ window.onload = function() {
             url = url_sp + id + "/";
             xmlobj.open("GET", url, true);
             xmlobj.send(null);
-            xmlobj.onreadystatechange = function() {
+            xmlobj.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var pkInfo = JSON.parse(this.response);
                     var dList = pkInfo.flavor_text_entries.filter(d => {
@@ -172,7 +173,7 @@ window.onload = function() {
                     url = pkInfo.evolution_chain.url;
                     xmlevol.open("GET", url, true);
                     xmlevol.send(null);
-                    xmlevol.onreadystatechange = function() {
+                    xmlevol.onreadystatechange = function () {
                         if (this.readyState == 4 && this.status == 200) {
                             var evolData = JSON.parse(this.response)["chain"];
                             if (evolData != undefined) {
@@ -292,7 +293,7 @@ window.onload = function() {
             var url2 = pokemon.url;
             xml2.open("GET", url2, true);
             xml2.send();
-            xml2.onreadystatechange = function() {
+            xml2.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var rp = JSON.parse(this.response);
                     var types = {};
@@ -354,10 +355,10 @@ window.onload = function() {
 
     var modal = document.getElementById('cardModal');
     var span = document.getElementsByClassName("close")[0];
-    span.onclick = function() {
+    span.onclick = function () {
         modal.style.display = "none";
     }
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
