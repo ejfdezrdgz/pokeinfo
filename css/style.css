@@ -45,6 +45,20 @@ p {
     margin-bottom: 10px;
 }
 
+#langFlags {
+    top: 0%;
+    right: 1%;
+    margin: 0;
+    width: 100%;
+    height: fit-content;
+    position: absolute;
+    text-align: right;
+}
+
+#langFlags img:hover {
+    cursor: pointer;
+}
+
 #modalTitle {
     font-weight: 700;
     font-size: 16pt;
@@ -179,11 +193,12 @@ p {
 }
 
 .modal-content {
-    background-color: #fefefe;
     margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
     width: 80%;
+    padding: 20px;
+    padding-top: 15px;
+    border: 1px solid #888;
+    background-color: #fefefe;
 }
 
 .modalCard {

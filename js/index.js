@@ -13,7 +13,7 @@ window.onload = function () {
     var gens = [];
     var range = [];
     var pk_list = [];
-    var pk_num = GEN["NEW"];
+    var pk_num = GEN["7"];
     var storage = window.localStorage;
     var searchBar = document.getElementById("searchBar");
     var genSels = document.getElementsByClassName("genSel");
@@ -43,7 +43,6 @@ window.onload = function () {
         xml.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var r = JSON.parse(this.response);
-                console.log(r.results);
                 loadPokemonList(r.results.slice(0, pk_num));
             }
         }
@@ -355,6 +354,8 @@ window.onload = function () {
 
     var modal = document.getElementById('cardModal');
     var span = document.getElementsByClassName("close")[0];
+    var langFlag = document.getElementsByClassName("langFlag");
+
     span.onclick = function () {
         modal.style.display = "none";
     }
@@ -362,5 +363,9 @@ window.onload = function () {
         if (event.target == modal) {
             modal.style.display = "none";
         }
+    }
+    langFlag.onclick = function () {
+        console.log(langFlag);
+
     }
 }
