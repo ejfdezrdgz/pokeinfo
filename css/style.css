@@ -18,7 +18,17 @@ article img {
 }
 
 body {
+    margin: 0;
     background-color: gainsboro;
+}
+
+footer {
+    margin: 0;
+    width: 100%;
+}
+
+footer p {
+    padding-bottom: 10px;
 }
 
 h2 {
@@ -28,6 +38,10 @@ h2 {
 
 hr {
     width: -webkit-fill-available;
+}
+
+sup {
+    margin: 0 !important;
 }
 
 p {
@@ -45,6 +59,11 @@ p {
     margin-bottom: 10px;
 }
 
+#flagSelect {
+    display: flex;
+    justify-content: space-evenly;
+}
+
 #langFlags {
     top: 0%;
     right: 1%;
@@ -58,6 +77,34 @@ p {
 #langFlags img:hover {
     cursor: pointer;
 }
+
+#langSelBox {
+    margin: auto;
+    width: 400px;
+    padding: 20px;
+    padding-top: 15px;
+    border: 1px solid #888;
+    background-color: #fefefe;
+}
+
+#langSelModal {
+    /* display: none; */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    /* background-color: rgba(0, 0, 0, 0.4); */
+    background-color: gainsboro;
+}
+
+#langSelModal p {
+    text-align: center;
+}
+
 
 #modalTitle {
     font-weight: 700;
@@ -91,6 +138,21 @@ p {
     height: 150px;
 }
 
+#scrollArrows {
+    display: flex;
+    position: fixed;
+    flex-direction: column;
+    right: 0%;
+    bottom: 0%;
+    margin: 5px;
+    margin-right: 10px;
+}
+
+#scrollArrows i {
+    cursor: pointer;
+    font-size: 25pt;
+}
+
 #searchBar {
     width: 85%;
     margin: 0 auto;
@@ -98,7 +160,7 @@ p {
 }
 
 .bodiv {
-    margin: 0 auto;
+    margin: 0 3%;
     max-width: 1300px;
 }
 
@@ -124,6 +186,14 @@ p {
     background-color: yellow;
 }
 
+.center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .close {
     top: -10px;
     position: relative;
@@ -133,8 +203,7 @@ p {
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+.close:hover, .close:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
@@ -174,6 +243,7 @@ p {
     border: 1px solid red;
     background-color: lightsalmon;
 }
+
 .mainArticle {
     cursor: pointer;
 }

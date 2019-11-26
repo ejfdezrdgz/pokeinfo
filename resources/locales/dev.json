@@ -1,4 +1,24 @@
 {
-    "pageTitle": "pageTitle",
-    "key": "DOOM"
+    "t_pageTitle": "t_pageTitle",
+    "t_findPokemon": "t_findPokemon",
+    "searchBar": "searchBar",
+    "t_genTitle": "t_genTitle",
+    "t_orderBy": "t_orderBy",
+    "t_optId": "t_optId",
+    "t_optHp": "t_optHp",
+    "t_optSp": "t_optSp",
+    "t_optAt": "t_optAt",
+    "t_optDf": "t_optDf",
+    "t_optSa": "t_optSa",
+    "t_optSd": "t_optSd",
+    "t_sortDir": "t_sortDir",
+    "t_firstType": "t_firstType",
+    "t_secondType": "t_secondType",
+    "t_exactOrder": "t_exactOrder",
+    "modalTitle": "modalTitle",
+    "t_loadingMsg": "t_loadingMsg",
+    "t_langSelect": "t_langSelect",
+    "t_english": "t_english",
+    "t_spanish": "t_spanish",
+    "t_footer": "t_footer"
 }

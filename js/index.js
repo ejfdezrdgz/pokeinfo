@@ -1,31 +1,18 @@
 import { Pokemon } from "./pokemon.js";
-import { type_colors } from "./constants.js";
+import { pk_num, storage, searchBar, genSels, orderSel, sortDir, orderCheck, typeSels, span, modal, section, url, url_sp, RANGEDIC, TYPE_COLORS } from "./init.js";
+import { loc_code, languageSelector, loadLocalization } from "./localizer.js";
 import { back_colors, sortPokemon, rangeCompress, rangePair } from "./functions.js";
 
 // if ('serviceWorker' in navigator) {
 //     navigator.serviceWorker.register('sw.js');
 // }
 
-const GEN = { "1": 151, "2": 251, "3": 386, "4": 494, "5": 649, "6": 721, "7": 802, "NEW": 807, "SP": 10157 };
-const RANGEDIC = { "1": [0, 151], "2": [152, 251], "3": [252, 386], "4": [387, 494], "5": [495, 649], "6": [650, 721], "7": [722, 802], "NEW": [803, 807], "SP": [10001, 10157] };
-
 window.onload = function () {
     var gens = [];
     var range = [];
     var pk_list = [];
-    var pk_num = GEN["7"];
-    var storage = window.localStorage;
-    var searchBar = document.getElementById("searchBar");
-    var genSels = document.getElementsByClassName("genSel");
-    var orderSel = document.getElementById("orderSel");
-    var sortDir = document.getElementById("sortdir");
-    var ordercheck = document.getElementById("exactorder");
-    var typeSels = document.getElementsByName("typeSel");
-    var section = document.getElementById("content");
-    var url = "https://pokeapi.co/api/v2/pokemon/?limit=1000";
-    var url_sp = "https://pokeapi.co/api/v2/pokemon-species/"
-    var url_evo = "https://pokeapi.co/api/v2/evolution-chain/";
-    var loc_code = "es";
+
+    languageSelector();
 
     if (storage.getItem("pkStrg") != null) {
         var pkStrg = JSON.parse(storage.getItem("pkStrg"));
@@ -56,7 +43,7 @@ window.onload = function () {
         opt.value = "any";
         opt.selected = true;
         selector.appendChild(opt);
-        for (const key in type_colors) {
+        for (const key in TYPE_COLORS) {
             var opt = document.createElement("option");
             opt.value = key;
             opt.innerText = key;
@@ -70,7 +57,7 @@ window.onload = function () {
             el.onclick = changeGenCol;
         }
     }
-    ordercheck.onchange = filterGen;
+    orderCheck.onchange = filterGen;
     searchBar.onkeyup = filterGen;
     sortDir.onchange = filterGen;
     orderSel.onchange = filterGen;
@@ -100,7 +87,7 @@ window.onload = function () {
             filteredList = pk_list;
         }
         loadPokemonInfo(filteredList.filter(pokemon => {
-            if (ordercheck.checked == true) {
+            if (orderCheck.checked == true) {
                 if (type1 == "any" && type2 == "any") {
                     return true;
                 } else if (pokemon.types["primary"] == type1 && pokemon.types["secondary"] == type2) {
@@ -352,20 +339,13 @@ window.onload = function () {
         })
     }
 
-    var modal = document.getElementById('cardModal');
-    var span = document.getElementsByClassName("close")[0];
-    var langFlag = document.getElementsByClassName("langFlag");
-
     span.onclick = function () {
         modal.style.display = "none";
     }
+
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
-    }
-    langFlag.onclick = function () {
-        console.log(langFlag);
-
     }
 }

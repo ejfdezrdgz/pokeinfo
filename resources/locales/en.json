@@ -1,4 +1,24 @@
 {
-    "pageTitle": "PokéInfo Encyclopedia",
-    "key": "DOOM"
+    "t_pageTitle": "PokéInfo Encyclopedia",
+    "t_findPokemon": "Find Pokémon",
+    "searchBar": "Pokémon name",
+    "t_genTitle": "Generations",
+    "t_orderBy": "Order by:",
+    "t_optId": "ID",
+    "t_optHp": "HP",
+    "t_optSp": "Speed",
+    "t_optAt": "Attack",
+    "t_optDf": "Defense",
+    "t_optSa": "Special Attack",
+    "t_optSd": "Special Defense",
+    "t_sortDir": "Descendant sort",
+    "t_firstType": "1st type",
+    "t_secondType": "2nd type",
+    "t_exactOrder": "Exact order",
+    "modalTitle": "Pokémon Info",
+    "t_loadingMsg": "Loading Pokémon world...",
+    "t_langSelect": "Select your preferred language",
+    "t_english": "English",
+    "t_spanish": "Spanish",
+    "t_footer": "PokéInfo beta v9"
 }

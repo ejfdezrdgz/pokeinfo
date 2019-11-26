@@ -1,11 +1,11 @@
-import { type_back, type_colors } from "./constants.js";
+import { TYPE_BACK, TYPE_COLORS } from "./init.js";
 
 export function back_colors(pk) {
-    var style = type_back;
+    var style = TYPE_BACK;
     var cp, cs;
-    cp = cs = type_colors[pk.types["primary"]];
+    cp = cs = TYPE_COLORS[pk.types["primary"]];
     if (pk.types["secondary"] != undefined) {
-        cs = type_colors[pk.types["secondary"]];
+        cs = TYPE_COLORS[pk.types["secondary"]];
     }
     style = style.split('_COLOR1_').join(cp);
     style = style.split('_COLOR2_').join(cs);

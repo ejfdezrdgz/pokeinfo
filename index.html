@@ -7,7 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <script src="https://unpkg.com/i18next/dist/umd/i18next.min.js"></script>
+    <script type="module" src="js/init.js"></script>
+    <script src="https://kit.fontawesome.com/1b33cfb4e2.js" crossorigin="anonymous"></script>
+    <script type="module" src="https://unpkg.com/i18next/dist/umd/i18next.js"></script>
+    <script type="module" src="https://unpkg.com/i18next-xhr-backend/i18nextXHRBackend.js"></script>
     <script type="module" src="js/index.js"></script>
     <title>PokéInfo</title>
 </head>
@@ -15,17 +18,18 @@
 <body>
     <div class="bodiv">
         <div id="langFlags">
-            <img class="langFlag" src="./resources/img/en.png">
-            <img class="langFlag" src="./resources/img/es.png">
+            <img class="langFlag" id="devFlag" src="./resources/img/dev.png">
+            <img class="langFlag" id="enFlag" src="./resources/img/en.png">
+            <img class="langFlag" id="esFlag" src="./resources/img/es.png">
         </div>
-        <h2 class="pageTitle" id="pageTitle">PokéInfo Encyclopedia</h2>
+        <h2 class="pageTitle t_string" id="t_pageTitle">PokéInfo Encyclopedia</h2>
         <div class="searchHeader">
-            <p>Find Pokémon</p>
+            <p id="t_findPokemon" class="t_string">Find Pokémon</p>
             <div class="searchDiv">
                 <div>
-                    <input type="text" name="searchBar" id="searchBar" placeholder="Pokémon name">
+                    <input type="text" name="searchBar" id="searchBar" class="t_string" placeholder="Pokémon name">
                     <hr>
-                    <div>Generations</div>
+                    <div class="t_string" id="t_genTitle">Generations</div>
                     <div>
                         <span class="genSel genSelOn" id="gen1">1</span>
                         <span class="genSel genSelOn" id="gen2">2</span>
@@ -39,32 +43,34 @@
                 </div>
                 <div>
                     <div>
-                        <label for="orderSel">Order by:</label>
+                        <label for="orderSel" id="t_orderBy" class="t_string">Order by:</label>
                         <select name="orderSel" id="orderSel">
-                            <option value="id">ID</option>
-                            <option value="hp">HP</option>
-                            <option value="speed">Speed</option>
-                            <option value="attack">Attack</option>
-                            <option value="defense">Defense</option>
-                            <option value="special-attack">Special Attack</option>
-                            <option value="special-defense">Special Defense</option>
+                            <option class="t_string" id="t_optId" value="id">ID</option>
+                            <option class="t_string" id="t_optHp" value="hp">HP</option>
+                            <option class="t_string" id="t_optSp" value="speed">Speed</option>
+                            <option class="t_string" id="t_optAt" value="attack">Attack</option>
+                            <option class="t_string" id="t_optDf" value="defense">Defense</option>
+                            <option class="t_string" id="t_optSa" value="special-attack">Special Attack</option>
+                            <option class="t_string" id="t_optSd" value="special-defense">Special Defense</option>
                         </select>
                     </div>
                     <div>
-                        <input type="checkbox" name="sortdir" id="sortdir">Descendant sort
+                        <input type="checkbox" name="sortdir" id="sortdir">
+                        <label for="sortdir" id="t_sortDir" class="t_string">Descendant sort</label>
                     </div>
                 </div>
                 <div>
                     <div>
-                        <label for="typeSel">Type 1:</label>
+                        <label for="typeSel" id="t_firstType" class="t_string">1st type:</label>
                         <select name="typeSel" id="type1Sel"></select>
                     </div>
                     <div>
-                        <label for="typeSel">Type 2:</label>
+                        <label for="typeSel" id="t_secondType" class="t_string">2nd type:</label>
                         <select name="typeSel" id="type2Sel"></select>
                     </div>
                     <div>
-                        <input type="checkbox" name="exactorder" id="exactorder">Exact order
+                        <input type="checkbox" name="exactorder" id="exactorder">
+                        <label for="exactorder" id="t_exactOrder" class="t_string">Exact order</label>
                     </div>
                 </div>
             </div>
@@ -75,7 +81,7 @@
             <div class="modal-content">
                 <div>
                     <span class="close">&times;</span>
-                    <p id="modalTitle">Pokémon Info</p>
+                    <p id="modalTitle" class="t_string">Pokémon Info</p>
                 </div>
                 <hr>
                 <div id="detailCard"></div>
@@ -84,10 +90,35 @@
         <div class="loader">
             <img id="pokelogo" src="./resources/img/Pokémon_logo.svg" alt="[insert here Pokémon logo]">
             <img id="pikaface" src="./resources/img/pikachu.png" alt="[insert here Pikachu face]">
-            <span>Loading Pokémon world...</span>
+            <span id="t_loadingMsg" class="t_string">Loading Pokémon world...</span>
         </div>
+        <div id="langSelModal">
+            <div id="langSelBox" class="modal-content center">
+                <p id="t_langSelect" class="t_string">Select your preferred language</p>
+                <hr>
+                <div id="flagSelect">
+                    <div>
+                        <img class="langFlag" id="enFlag" src="./resources/img/en.png">
+                        <p id="t_english" class="t_string">English</p>
+                    </div>
+                    <hr style="margin: 0; width: 0; height: auto; border: 1px solid black;">
+                    <div>
+                        <img class="langFlag" id="esFlag" src="./resources/img/es.png">
+                        <p id="t_spanish" class="t_string">Spanish</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="scrollArrows">
+            <i id="scrollUp" class="scroller fas fa-angle-up"></i>
+            <i id="scrollDown" class="scroller fas fa-angle-down"></i>
+        </div>
+        <hr>
+        <footer>
+            <p id="t_footer" class="t_string"></p>
+        </footer>
     </div>
-    <script src="js/localizer.js"></script>
+    <script type="module" src="js/localizer.js"></script>
 </body>
 
 </html>
