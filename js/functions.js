@@ -1,4 +1,4 @@
-import { TYPE_BACK, TYPE_COLORS } from "./init.js";
+import { TYPE_BACK, TYPE_COLORS, RANGEDIC } from "./init.js";
 
 export function back_colors(pk) {
     var style = TYPE_BACK;
@@ -36,4 +36,32 @@ export function rangePair(range) {
         r.push(range.splice(0, 2));
     }
     return r;
+}
+
+export function genParse(pk) {
+    for (let key in RANGEDIC) {
+        var el = RANGEDIC[key];
+        if (pk.id >= el[0] && pk.id <= el[1]) {
+            switch (key) {
+                case "1":
+                    return "I";
+                case "2":
+                    return "II";
+                case "3":
+                    return "III";
+                case "4":
+                    return "IV";
+                case "5":
+                    return "V";
+                case "6":
+                    return "VI";
+                case "7":
+                    return "VII";
+                case "NEW":
+                    return "NEW";
+                case "SP":
+                    return "SP";
+            }
+        }
+    }
 }

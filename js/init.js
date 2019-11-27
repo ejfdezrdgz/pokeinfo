@@ -24,7 +24,7 @@ export const TYPE_COLORS = {
     "shadow": "#68A090"
 }
 
-export var pk_num = GENS["3"];
+export var pk_num = GENS["7"];
 export var storage = window.localStorage;
 export var searchBar = document.getElementById("searchBar");
 export var genSels = document.getElementsByClassName("genSel");
@@ -32,12 +32,14 @@ export var orderSel = document.getElementById("orderSel");
 export var sortDir = document.getElementById("sortdir");
 export var orderCheck = document.getElementById("exactorder");
 export var typeSels = document.getElementsByName("typeSel");
-export var span = document.getElementsByClassName("close")[0];
-export var modal = document.getElementById('cardModal');
+export var closeModalSpan = document.getElementById("closeModal");
+export var cardModal = document.getElementById('cardModal');
 export var section = document.getElementById("content");
-export var url = "https://pokeapi.co/api/v2/pokemon/?limit=1000";
-export var url_sp = "https://pokeapi.co/api/v2/pokemon-species/"
-export var url_evo = "https://pokeapi.co/api/v2/evolution-chain/";
+export var API_URL = "https://pokeapi.co/api/v2/";
+export var API_URL_GEN = "generation/";
+export var API_URL_SPECIES = "pokemon-species/";
+export var API_URL_POKELIST = "pokemon/?limit=1000";
+export var API_URL_EVOCHAIN = "evolution-chain/";
 
 var locale = storage.getItem("locale");
 if (locale == null || locale == undefined || locale == "") {
@@ -61,4 +63,23 @@ for (let item of arrows) {
                 break;
         }
     });
+}
+
+export function initModalOffFunction() {
+    closeModalSpan.onclick = onClickCloseModalOff;
+    cardModal.onclick = onClickOutModalOff;
+    window.onkeydown = onEscapeDownModalOff;
+}
+function onClickCloseModalOff() {
+    cardModal.style.display = "none";
+}
+function onClickOutModalOff(event) {
+    if (event.target == cardModal) {
+        cardModal.style.display = "none";
+    }
+}
+function onEscapeDownModalOff(event) {
+    if (event.key == "Escape" && cardModal.style.display == "block") {
+        cardModal.style.display = "none";
+    }
 }

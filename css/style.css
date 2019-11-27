@@ -6,20 +6,29 @@ article {
     margin: 5px;
     width: 95px;
     height: 120px;
-    border: 1px solid black;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    overflow: hidden;
+    border-radius: 3px;
+    box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.75);
+    /* border: 1px solid black; */
+    /* align-items: stretch; */
+    grid-template-columns: repeat(4, 25%);
+    grid-template-rows: repeat(8, 12.5%);
 }
 
 article img {
-    max-width: 96px;
-    max-height: 96px;
+    max-width: 95px;
+    max-height: 95px;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row-start: 1;
+    grid-row-end: 8;
 }
 
 body {
     margin: 0;
     display: flex;
+    /* cursor: url(../resources/img/cursor.png), none; */
     justify-content: center;
     background-color: gainsboro;
 }
@@ -165,26 +174,38 @@ p {
     max-width: 1300px;
 }
 
-.cardIdCorner {
-    width: 22px;
-    top: -117px;
-    right: -36px;
+.cardCorner {
     font-size: 9pt;
-    line-height: 15px;
-    text-align: center;
-    position: relative;
-    background-color: yellow;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background-color: rgba(255, 255, 0, 0.7);
+}
+
+.cardIdCorner {
+    border-bottom-left-radius: 4px;
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 1;
+    grid-row-end: 2;
 }
 
 .cardGenCorner {
-    width: 22px;
-    top: -132px;
-    left: -36px;
-    font-size: 9pt;
-    line-height: 15px;
-    text-align: center;
-    position: relative;
-    background-color: yellow;
+    border-bottom-right-radius: 4px;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+.cardPokeName {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    grid-row-start: 7;
+    grid-row-end: 9;
 }
 
 .center {
@@ -204,8 +225,7 @@ p {
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+.close:hover, .close:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;

@@ -1,7 +1,7 @@
 import { Pokemon } from "./pokemon.js";
-import { pk_num, storage, searchBar, genSels, orderSel, sortDir, orderCheck, typeSels, span, modal, section, url, url_sp, RANGEDIC, TYPE_COLORS } from "./init.js";
-import { loc_code, languageSelector, loadLocalization } from "./localizer.js";
-import { back_colors, sortPokemon, rangeCompress, rangePair } from "./functions.js";
+import { pk_num, storage, searchBar, genSels, orderSel, sortDir, orderCheck, typeSels, cardModal, section, RANGEDIC, TYPE_COLORS, API_URL, API_URL_SPECIES, API_URL_POKELIST, API_URL_GEN, initModalOffFunction } from "./init.js";
+import { loc_code, languageSelector } from "./localizer.js";
+import { back_colors, sortPokemon, rangeCompress, rangePair, genParse } from "./functions.js";
 
 // if ('serviceWorker' in navigator) {
 //     navigator.serviceWorker.register('sw.js');
@@ -11,8 +11,29 @@ window.onload = function () {
     var gens = [];
     var range = [];
     var pk_list = [];
+    var url_sp = API_URL + API_URL_SPECIES;
+    var url_gen_list = API_URL + API_URL_GEN;
+    var url_pk_list = API_URL + API_URL_POKELIST;
 
     languageSelector();
+    initModalOffFunction();
+
+    // if (storage.getItem("genStrg") != null) {
+    //     var genStrg = JSON.parse(storage.getItem("genStrg"));
+    //     console.log("genStrg está guardada localmente");
+    //     console.log(genStrg);
+    // } else {
+    //     var xml = new this.XMLHttpRequest();
+    //     xml.open("GET", url_gen_list, true);
+    //     xml.send(null);
+    //     xml.onreadystatechange = function () {
+    //         if (this.readyState == 4 && this.status == 200) {
+    //             var r = JSON.parse(this.response);
+    //             console.log(r.results);
+    //             loadGenerationList(r.results);
+    //         }
+    //     }
+    // }
 
     if (storage.getItem("pkStrg") != null) {
         var pkStrg = JSON.parse(storage.getItem("pkStrg"));
@@ -25,7 +46,7 @@ window.onload = function () {
         loadPokemonInfo(pk_list);
     } else {
         var xml = new XMLHttpRequest();
-        xml.open("GET", url, true);
+        xml.open("GET", url_pk_list, true);
         xml.send(null);
         xml.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -54,7 +75,7 @@ window.onload = function () {
     for (const key in genSels) {
         if (genSels.hasOwnProperty(key)) {
             const el = genSels[key];
-            el.onclick = changeGenCol;
+            el.onclick = toggleGenButton;
         }
     }
     orderCheck.onchange = filterGen;
@@ -141,7 +162,7 @@ window.onload = function () {
             buildModal(pokemon);
         } else {
             var xmlobj = new XMLHttpRequest();
-            url = url_sp + id + "/";
+            var url = url_sp + id + "/";
             xmlobj.open("GET", url, true);
             xmlobj.send(null);
             xmlobj.onreadystatechange = function () {
@@ -182,7 +203,7 @@ window.onload = function () {
         }
     }
 
-    function changeGenCol(evt) {
+    function toggleGenButton(evt) {
         var sel = evt.currentTarget;
         if (sel.className == "genSel genSelOn") {
             sel.className = "genSel genSelOff";
@@ -213,7 +234,7 @@ window.onload = function () {
     }
 
     function buildModal(pokemon) {
-        modal.style.display = "block";
+        cardModal.style.display = "block";
         document.getElementById("detailCard").innerHTML = "";
         document.getElementById("detailCard").appendChild(htmlModal(pokemon));
     }
@@ -273,13 +294,29 @@ window.onload = function () {
         return content;
     }
 
+    function loadGenerationList(genlist) {
+        genlist.forEach(generation => {
+            var xml = new XMLHttpRequest();
+            var url = generation.url;
+            xml.open("GET", url, true);
+            xml.send();
+            xml.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var rp = JSON.parse(this.response);
+                    console.log(rp);
+                    console.log("loadGenerationList() end");
+                }
+            }
+        });
+    }
+
     function loadPokemonList(pokelist) {
         pokelist.forEach(pokemon => {
-            var xml2 = new XMLHttpRequest();
-            var url2 = pokemon.url;
-            xml2.open("GET", url2, true);
-            xml2.send();
-            xml2.onreadystatechange = function () {
+            var xml = new XMLHttpRequest();
+            var url = pokemon.url;
+            xml.open("GET", url, true);
+            xml.send();
+            xml.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var rp = JSON.parse(this.response);
                     var types = {};
@@ -296,8 +333,6 @@ window.onload = function () {
                     });
                     var pk = new Pokemon(rp.id, rp.name, rp.sprites.front_default, types, stats);
                     pk_list.push(pk);
-
-                    // console.log(pk_list);
 
                     if (pk_list.length >= pk_num) {
                         loadPokemonInfo(pk_list.sort(sortPokemon));
@@ -319,12 +354,13 @@ window.onload = function () {
             card.style = back_colors(pokemon);
             var idCorner = document.createElement("div");
             idCorner.innerHTML = pokemon.id;
-            idCorner.className = "cardIdCorner";
+            idCorner.className = "cardCorner cardIdCorner";
             var genCorner = document.createElement("div");
-            genCorner.innerHTML = "VII";
-            genCorner.className = "cardGenCorner";
+            genCorner.innerHTML = genParse(pokemon);
+            genCorner.className = "cardCorner cardGenCorner";
             var p = document.createElement("p");
             p.innerText = pokemon.name;
+            p.className = "cardPokeName";
             var img = document.createElement("img");
             img.src = pokemon.img;
             var span = document.createElement("span");
@@ -337,15 +373,5 @@ window.onload = function () {
             card.appendChild(span);
             section.appendChild(card);
         })
-    }
-
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
     }
 }
