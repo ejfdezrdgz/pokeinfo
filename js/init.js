@@ -24,7 +24,7 @@ export const TYPE_COLORS = {
     "shadow": "#68A090"
 }
 
-export var pk_num = GENS["7"];
+export var pk_num = GENS["1"];
 export var storage = window.localStorage;
 export var searchBar = document.getElementById("searchBar");
 export var genSels = document.getElementsByClassName("genSel");

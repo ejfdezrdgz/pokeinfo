@@ -23,52 +23,55 @@
             <img class="langFlag" id="esFlag" src="./resources/img/es.png">
         </div>
         <h2 class="pageTitle t_string" id="t_pageTitle">PokéInfo Encyclopedia</h2>
-        <div class="searchHeader">
-            <p id="t_findPokemon" class="t_string">Find Pokémon</p>
-            <div class="searchDiv">
-                <div>
-                    <input type="text" name="searchBar" id="searchBar" class="t_string" placeholder="Pokémon name">
-                    <hr>
-                    <div class="t_string" id="t_genTitle">Generations</div>
-                    <div>
-                        <span class="genSel genSelOn" id="gen1">1</span>
-                        <span class="genSel genSelOn" id="gen2">2</span>
-                        <span class="genSel genSelOn" id="gen3">3</span>
-                        <span class="genSel genSelOn" id="gen4">4</span>
-                        <span class="genSel genSelOn" id="gen5">5</span>
-                        <span class="genSel genSelOn" id="gen6">6</span>
-                        <span class="genSel genSelOn" id="gen7">7</span>
-                        <span class="genSel genSelOff" id="genSP">SP</span>
-                    </div>
+        <div id="searchHeader">
+            <div id="searchHeaderCell1" class="searchDiv">
+                <p id="t_findPokemon" class="t_string">Find Pokémon</p>
+                <hr id="headerVertDivider">
+            </div>
+            <div id="searchHeaderCell2" class="searchDiv">
+                <input type="text" name="searchBar" id="searchBar" class="t_string" placeholder="Pokémon name">
+                <hr id="searchDivGenDivider">
+                <div class="t_string" id="t_genTitle">Generations</div>
+                <div id="searchDivGenButtons">
+                    <span class="genSel genSelOn" id="gen1">1</span>
+                    <span class="genSel genSelOn" id="gen2">2</span>
+                    <span class="genSel genSelOn" id="gen3">3</span>
+                    <span class="genSel genSelOn" id="gen4">4</span>
+                    <span class="genSel genSelOn" id="gen5">5</span>
+                    <span class="genSel genSelOn" id="gen6">6</span>
+                    <span class="genSel genSelOn" id="gen7">7</span>
+                    <span class="genSel genSelOff" id="genSP">SP</span>
                 </div>
-                <div>
-                    <div>
-                        <label for="orderSel" id="t_orderBy" class="t_string">Order by:</label>
-                        <select name="orderSel" id="orderSel">
-                            <option class="t_string" id="t_optId" value="id">ID</option>
-                            <option class="t_string" id="t_optHp" value="hp">HP</option>
-                            <option class="t_string" id="t_optSp" value="speed">Speed</option>
-                            <option class="t_string" id="t_optAt" value="attack">Attack</option>
-                            <option class="t_string" id="t_optDf" value="defense">Defense</option>
-                            <option class="t_string" id="t_optSa" value="special-attack">Special Attack</option>
-                            <option class="t_string" id="t_optSd" value="special-defense">Special Defense</option>
-                        </select>
-                    </div>
-                    <div>
-                        <input type="checkbox" name="sortdir" id="sortdir">
-                        <label for="sortdir" id="t_sortDir" class="t_string">Descendant sort</label>
-                    </div>
+            </div>
+            <div id="searchHeaderCell3" class="searchDiv">
+                <div id="searchHeaderCell3Div1">
+                    <label for="orderSel" id="t_orderBy" class="t_string">Order by:</label>
+                    <select name="orderSel" id="orderSel">
+                        <option class="t_string" id="t_optId" value="id">ID</option>
+                        <option class="t_string" id="t_optHp" value="hp">HP</option>
+                        <option class="t_string" id="t_optSp" value="speed">Speed</option>
+                        <option class="t_string" id="t_optAt" value="attack">Attack</option>
+                        <option class="t_string" id="t_optDf" value="defense">Defense</option>
+                        <option class="t_string" id="t_optSa" value="special-attack">Special Attack</option>
+                        <option class="t_string" id="t_optSd" value="special-defense">Special Defense</option>
+                    </select>
                 </div>
-                <div>
-                    <div>
-                        <label for="typeSel" id="t_firstType" class="t_string">1st type:</label>
+                <div id="searchHeaderCell3Div2">
+                    <input type="checkbox" name="sortdir" id="sortdir">
+                    <label for="sortdir" id="t_sortDir" class="t_string">Descendant sort</label>
+                </div>
+            </div>
+            <div id="searchHeaderCell4" class="searchDiv">
+                <div id="searchHeaderCell4Grid">
+                    <div id="searchHeaderCell4Div1">
+                        <label for="typeSel" id="t_firstType" class="t_string typeSelLabel">1st type:</label>
                         <select name="typeSel" id="type1Sel"></select>
                     </div>
-                    <div>
-                        <label for="typeSel" id="t_secondType" class="t_string">2nd type:</label>
+                    <div id="searchHeaderCell4Div2">
+                        <label for="typeSel" id="t_secondType" class="t_string typeSelLabel">2nd type:</label>
                         <select name="typeSel" id="type2Sel"></select>
                     </div>
-                    <div>
+                    <div id="searchHeaderCell4Div3">
                         <input type="checkbox" name="exactorder" id="exactorder">
                         <label for="exactorder" id="t_exactOrder" class="t_string">Exact order</label>
                     </div>

@@ -75,6 +75,10 @@ p {
     justify-content: space-evenly;
 }
 
+#headerVertDivider {
+    display: none;
+}
+
 #langFlags {
     top: 0%;
     right: 1%;
@@ -144,6 +148,10 @@ p {
     }
 }
 
+#orderSel {
+    width: 130px;
+}
+
 #pokelogo {
     height: 150px;
 }
@@ -164,14 +172,87 @@ p {
 }
 
 #searchBar {
-    width: 85%;
+    width: 90%;
     margin: 0 auto;
     max-width: 200px;
 }
 
+#searchDivGenButtons span {
+    margin: 2px;
+}
+
+#searchHeader {
+    width: 100%;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    grid-template-columns: 1fr 3fr 3fr 3fr;
+    -webkit-user-select: none;
+}
+
+#searchHeader p {
+    width: fit-content;
+    text-align: center;
+}
+
+#searchHeaderCell3Div1 {
+    width: 230px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#searchHeaderCell3Div2 {
+    display: flex;
+    align-items: flex-end;
+}
+
+#searchHeaderCell4 {
+    width: 100%;
+    height: 100%;
+}
+
+#searchHeaderCell4Div1, #searchHeaderCell4Div2 {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 80px;
+}
+
+#searchHeaderCell4Div1 {
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+#searchHeaderCell4Div2 {
+    grid-row-start: 2;
+    grid-row-end: 3;
+}
+
+#searchHeaderCell4Div3 {
+    align-items: flex-end;
+    justify-content: center !important;
+    grid-row-start: 3;
+    grid-row-end: 4;
+}
+
+#searchHeaderCell4Grid {
+    width: 100%;
+    display: grid;
+    grid-template-rows: repeat(3, 28px);
+}
+
+#searchHeaderCell4Grid div select {
+    grid-column-start: 2;
+    grid-column-end: 4;
+}
+
 .bodiv {
     margin: 0;
+    width: 95%;
     max-width: 1300px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .cardCorner {
@@ -333,38 +414,17 @@ p {
 }
 
 .searchDiv {
-    width: 85%;
+    width: fit-content;
     display: flex;
-    align-items: center;
-    justify-content: space-evenly;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .searchDiv div {
     display: flex;
-    flex-direction: column;
-}
-
-.searchDiv div div {
-    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-}
-
-.searchDiv div div * {
-    margin: 3px;
-}
-
-.searchHeader {
-    display: flex;
-    align-items: center;
-    -webkit-user-select: none;
-    justify-content: space-between;
-}
-
-.searchHeader p {
-    width: 15%;
-    text-align: center;
 }
 
 .tooltip {
@@ -402,4 +462,44 @@ p {
 .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
+}
+
+.typeSelLabel {
+    display: flex;
+    justify-content: center;
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
+
+@media screen and (max-width: 800px) {
+    #headerVertDivider {
+        width: 0;
+        height: 80%;
+        margin: 0;
+        display: block;
+    }
+    #searchDivGenDivider {
+        display: none;
+    }
+    #searchHeader {
+        display: grid;
+        width: fit-content;
+        justify-content: center;
+        grid-template-rows: 2fr 2fr;
+        grid-template-columns: 2fr 2fr;
+    }
+    #searchHeaderCell1 {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+    .searchDiv {
+        width: 100%;
+        height: 100%;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+    }
 }
