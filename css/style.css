@@ -471,7 +471,7 @@ p {
     grid-column-end: 2;
 }
 
-@media screen and (max-width: 800px) {
+@media only screen and (max-width: 800px) {
     #headerVertDivider {
         width: 0;
         height: 80%;
@@ -504,7 +504,7 @@ p {
     }
 }
 
-@media screen and (max-width: 480px) {
+@media only screen and (max-width: 600px) {
     #searchHeaderCell3Div1 {
         flex-direction: column;
     }
