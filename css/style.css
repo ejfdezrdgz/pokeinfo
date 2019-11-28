@@ -503,3 +503,9 @@ p {
         justify-content: space-evenly;
     }
 }
+
+@media screen and (max-width: 480px) {
+    #searchHeaderCell3Div1 {
+        flex-direction: column;
+    }
+}
