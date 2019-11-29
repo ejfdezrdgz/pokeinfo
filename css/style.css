@@ -75,22 +75,50 @@ p {
     justify-content: space-evenly;
 }
 
+#headerLangDiv {
+    display: grid;
+    width: fit-content;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    grid-template-columns: 1fr 30px;
+}
+
 #headerVertDivider {
     display: none;
 }
 
 #langFlags {
-    top: 0%;
-    right: 1%;
-    margin: 0;
-    width: 100%;
-    height: fit-content;
+    top: 45px;
+    right: 3%;
+    width: 200px;
+    display: none;
     position: absolute;
-    text-align: right;
+    grid-template-columns: repeat(3, 1fr);
+    box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.75);
+    background-color: gainsboro;
 }
 
 #langFlags img:hover {
     cursor: pointer;
+}
+
+#langMenu {
+    margin: 0;
+    padding: 0;
+    z-index: 1000;
+    height: fit-content;
+    list-style: none;
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+#langMenu li {
+    position: static;
+}
+
+#langMenu:hover #langFlags {
+    display: grid;
 }
 
 #langSelBox {
@@ -195,10 +223,17 @@ p {
     text-align: center;
 }
 
+#searchHeaderCell3 {
+    justify-content: space-evenly;
+}
+
 #searchHeaderCell3Div1 {
     width: 230px;
-    display: flex;
-    justify-content: space-between;
+    height: 50px;
+    display: grid;
+    text-align: center;
+    align-items: center;
+    grid-template-columns: 1fr auto;
 }
 
 #searchHeaderCell3Div2 {
@@ -243,6 +278,25 @@ p {
 #searchHeaderCell4Grid div select {
     grid-column-start: 2;
     grid-column-end: 4;
+}
+
+#topHeader {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#t_langText {
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
+
+#t_pageTitle {
+    width: 85%;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
 }
 
 .bodiv {
@@ -398,6 +452,12 @@ p {
     background-color: #888;
 }
 
+.langFlag {
+    margin: 5px;
+    align-self: center;
+    justify-self: center;
+}
+
 .loader {
     display: flex;
     text-align: center;
@@ -415,6 +475,7 @@ p {
 
 .searchDiv {
     width: fit-content;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -493,7 +554,7 @@ p {
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
-    }
+    }   
     .searchDiv {
         width: 100%;
         height: 100%;
@@ -506,6 +567,11 @@ p {
 
 @media only screen and (max-width: 600px) {
     #searchHeaderCell3Div1 {
-        flex-direction: column;
+        grid-template-rows: 1fr auto;
+        grid-template-columns: 1fr;
+    }
+    #searchHeaderCell3Div1 div {
+        display: flex;
+        justify-content: center;
     }
 }

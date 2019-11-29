@@ -4,8 +4,8 @@
     "searchBar": "Nombre del Pokémon",
     "t_genTitle": "Generaciones",
     "t_orderBy": "Ordenar por:",
-    "t_optId": "ID",
-    "t_optHp": "Puntos de vida",
+    "t_optId": "Número",
+    "t_optHp": "Vida",
     "t_optSp": "Velocidad",
     "t_optAt": "Ataque",
     "t_optDf": "Defensa",
@@ -20,5 +20,8 @@
     "t_langSelect": "Seleccione su idioma preferido",
     "t_english": "Inglés",
     "t_spanish": "Español",
-    "t_footer": "PokéInfo beta v11"
+    "t_german": "Alemán",
+    "t_footer": "PokéInfo beta v12",
+    "t_langText": "Idioma:",
+    "t_langCode": "ES"
 }

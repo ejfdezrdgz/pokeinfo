@@ -20,5 +20,8 @@
     "t_langSelect": "t_langSelect",
     "t_english": "t_english",
     "t_spanish": "t_spanish",
-    "t_footer": "t_footer"
+    "t_german": "t_german",
+    "t_footer": "t_footer",
+    "t_langText": "t_langText",
+    "t_langCode": "DEV"
 }
