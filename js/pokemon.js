@@ -5,6 +5,7 @@ export class Pokemon {
         this.img = img;
         this.types = types;
         this.stats = stats;
+        this.loc_names = { "de": "", "en": "", "es": "" }
     }
 
     getTypes() {

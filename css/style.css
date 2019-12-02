@@ -1,5 +1,6 @@
 * {
-    font-family: "Segoe UI";
+    /* font-family: "Segoe UI"; */
+    font-family: "Trebuchet MS";
 }
 
 article {
@@ -73,13 +74,25 @@ p {
 
 #flagSelect {
     display: flex;
+    align-items: center;
     justify-content: space-evenly;
 }
 
+#flagSelect div img {
+    height: 50px;
+}
+
+#flagSelect hr {
+    width: 0;
+    margin: 0;
+    height: 75px;
+    border: 1px solid black;
+}
+
 #headerLangDiv {
-    right: 3%;
+    /* right: 3%; */
     display: grid;
-    position: absolute;
+    /* position: absolute; */
     width: fit-content;
     align-items: center;
     justify-content: center;
@@ -92,7 +105,7 @@ p {
 }
 
 #langFlags {
-    top: 22px;
+    top: 40px;
     right: 3%;
     width: 200px;
     display: none;
@@ -127,8 +140,7 @@ p {
 #langSelBox {
     margin: auto;
     width: 400px;
-    padding: 20px;
-    padding-top: 15px;
+    padding: 15px;
     border: 1px solid #888;
     background-color: #fefefe;
 }
@@ -293,12 +305,19 @@ p {
     margin-left: 0;
 }
 
+#titleHeader {
+    display: flex;
+    width: fit-content;
+    height: fit-content;
+    align-items: center;
+}
+
 #topHeader {
     height: 60px;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-between;
 }
 
 #t_langText {
@@ -307,13 +326,12 @@ p {
 }
 
 #t_pageTitle {
-    left: 5%;
     font-size: 22pt;
     font-weight: bold;
-    position: absolute;
     padding-left: 10px;
     padding-right: 10px;
     text-align: center;
+    text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
 }
 
 .bodiv {
@@ -505,6 +523,23 @@ p {
     justify-content: center;
 }
 
+.titleImg {
+    height: 35px;
+    animation-name: rolling;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes rolling {
+    from {
+        transform: rotateY(0deg);
+    }
+    to {
+        transform: rotateY(360deg);
+    }
+}
+
 .typeSelLabel {
     display: flex;
     justify-content: center;
@@ -545,7 +580,19 @@ p {
     }
 }
 
+@media only screen and (max-width: 600px) {
+    #topHeader {
+        height: 80px;
+    }
+    #t_pageTitle {
+        width: min-content;
+    }
+}
+
 @media only screen and (max-width: 480px) {
+    #langFlags {
+        top: 50px;
+    }
     #searchDivGenButtons {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -573,12 +620,6 @@ p {
     }
     #searchHeaderCell4Grid div {
         display: flex;
-    }
-    #topHeader {
-        height: 80px;
-    }
-    #t_pageTitle {
-        width: min-content;
     }
     #t_sortDir {
         width: min-content;

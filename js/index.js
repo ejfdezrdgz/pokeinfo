@@ -1,6 +1,6 @@
 import { Pokemon } from "./pokemon.js";
 import { pk_num, storage, searchBar, genSels, orderSel, sortDir, orderCheck, typeSels, cardModal, section, RANGEDIC, TYPE_COLORS, API_URL, API_URL_SPECIES, API_URL_POKELIST, API_URL_GEN, initModalOffFunction } from "./init.js";
-import { loc_code, languageSelector } from "./localizer.js";
+import { loc_code, languageSelector, loadLocalization } from "./localizer.js";
 import { back_colors, sortPokemon, rangeCompress, rangePair, genParse } from "./functions.js";
 
 // if ('serviceWorker' in navigator) {
@@ -15,34 +15,18 @@ window.onload = function () {
     var url_gen_list = API_URL + API_URL_GEN;
     var url_pk_list = API_URL + API_URL_POKELIST;
 
-    languageSelector();
-    initModalOffFunction();
-
-    // if (storage.getItem("genStrg") != null) {
-    //     var genStrg = JSON.parse(storage.getItem("genStrg"));
-    //     console.log("genStrg está guardada localmente");
-    //     console.log(genStrg);
-    // } else {
-    //     var xml = new this.XMLHttpRequest();
-    //     xml.open("GET", url_gen_list, true);
-    //     xml.send(null);
-    //     xml.onreadystatechange = function () {
-    //         if (this.readyState == 4 && this.status == 200) {
-    //             var r = JSON.parse(this.response);
-    //             console.log(r.results);
-    //             loadGenerationList(r.results);
-    //         }
-    //     }
-    // }
-
     if (storage.getItem("pkStrg") != null) {
         var pkStrg = JSON.parse(storage.getItem("pkStrg"));
         pkStrg.forEach(pokemon => {
+            console.log(pokemon);
+            
             var pk = new Pokemon(pokemon.id, pokemon.name, pokemon.img, pokemon.types, pokemon.stats);
             if (pokemon["description"] != undefined) pk.setDescription(pokemon.description);
             if (pokemon["evolChain"] != undefined) pk.setEvolChain(pokemon.evolChain);
             pk_list.push(pk);
         });
+        // console.log(pk_list);
+        
         loadPokemonInfo(pk_list);
     } else {
         var xml = new XMLHttpRequest();
@@ -56,17 +40,20 @@ window.onload = function () {
         }
     }
 
-    // TODO Mobile adaptations
-
     typeSels.forEach(selector => {
         var opt = document.createElement("option");
-        opt.innerText = "-- ANY TYPE --";
+        var id = "any";
         opt.value = "any";
+        opt.id = `t_${id}Type`;
+        opt.className = "t_string";
+        opt.innerText = i18next.t(`t_${id}Type`);
         opt.selected = true;
         selector.appendChild(opt);
         for (const key in TYPE_COLORS) {
             var opt = document.createElement("option");
             opt.value = key;
+            opt.id = `t_${key}Type`;
+            opt.className = "t_string";
             opt.innerText = key;
             selector.appendChild(opt);
         }
@@ -82,6 +69,10 @@ window.onload = function () {
     searchBar.onkeyup = filterGen;
     sortDir.onchange = filterGen;
     orderSel.onchange = filterGen;
+
+    loadLocalization();
+    languageSelector();
+    initModalOffFunction();
 
     function checkRange(pokemon) {
         var r = false;
@@ -255,7 +246,6 @@ window.onload = function () {
         img.src = pokemon.img;
         var stats = document.createElement("div");
         stats.className = "modalStats";
-        // TODO Add stats
         var evol = document.createElement("div");
         evol.className = "modalEvol";
         var ep = document.createElement("h4");

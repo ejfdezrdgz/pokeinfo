@@ -18,7 +18,10 @@
 <body>
     <div class="bodiv">
         <div id="topHeader">
-            <p class="pageTitle t_string" id="t_pageTitle">PokéInfo Encyclopedia</p>
+            <div id="titleHeader">
+                <img class="titleImg" src="./resources/img/pokeball.png">
+                <p class="pageTitle t_string" id="t_pageTitle">PokéInfo Encyclopedia</p>
+            </div>
             <div id="headerLangDiv">
                 <p id="t_langText" class="t_string">Language:</p>
                 <ul id="langMenu">
@@ -114,12 +117,17 @@
                 <hr>
                 <div id="flagSelect">
                     <div>
-                        <img class="langFlag" id="enFlag" src="./resources/img/en.png">
+                        <img class="langFlag" id="deFlag" src="./resources/img/de.svg">
+                        <p id="t_german" class="t_string">German</p>
+                    </div>
+                    <hr>
+                    <div>
+                        <img class="langFlag" id="enFlag" src="./resources/img/en.svg">
                         <p id="t_english" class="t_string">English</p>
                     </div>
-                    <hr style="margin: 0; width: 0; height: auto; border: 1px solid black;">
+                    <hr>
                     <div>
-                        <img class="langFlag" id="esFlag" src="./resources/img/es.png">
+                        <img class="langFlag" id="esFlag" src="./resources/img/es.svg">
                         <p id="t_spanish" class="t_string">Spanish</p>
                     </div>
                 </div>
@@ -135,7 +143,6 @@
             <a href="https://github.com/ejfdezrdgz">GitHub</a>
         </footer>
     </div>
-    <script type="module" src="js/localizer.js"></script>
 </body>
 
 </html>

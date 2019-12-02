@@ -19,7 +19,9 @@ export const TYPE_COLORS = {
     "ice": "#98D8D8",
     "dragon": "#7038F8",
     "dark": "#705848",
-    "fairy": "#EE99AC",
+    "fairy": "#EE99AC"
+}
+export const TYPE_COLORS_2 = {
     "unknown": "#68A090",
     "shadow": "#68A090"
 }

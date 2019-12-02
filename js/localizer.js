@@ -4,9 +4,8 @@ var localePath = "";
 
 export var loc_code = localizationCode();
 localePath = getLocalePath();
-loadLocalization(localePath);
 
-export function loadLocalization(localePath) {
+export function loadLocalization() {
     i18next
         .use(Backend)
         .init({
