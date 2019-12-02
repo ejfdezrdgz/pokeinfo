@@ -363,14 +363,10 @@ window.onload = function () {
             p.className = "cardPokeName";
             var img = document.createElement("img");
             img.src = pokemon.img;
-            var span = document.createElement("span");
-            span.innerHTML = `Nombre:<br> ${pokemon.name}<hr>Types:<br> ${pokemon.getTypes()}<hr>Stats:<br> ${pokemon.getStats()}`;
-            span.className = "tooltiptext";
             card.appendChild(img);
             card.appendChild(p);
             card.appendChild(idCorner);
             card.appendChild(genCorner);
-            card.appendChild(span);
             section.appendChild(card);
         })
     }
