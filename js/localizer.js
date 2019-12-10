@@ -14,7 +14,7 @@ export function loadLocalization() {
             backend: {
                 loadPath: localePath
             }
-        }, function(err, t) {
+        }, function (err, t) {
             updateLocalization();
         });
 }
@@ -26,7 +26,7 @@ export function loadPokemonLocalization() {
             backend: {
                 loadPath: localePath
             }
-        }, function(err, t) {
+        }, function (err, t) {
             updatePokemonLocalization();
         });
 }
@@ -73,7 +73,7 @@ export function languageSelector() {
     var langFlags = document.getElementsByClassName("langFlag");
     for (let item of langFlags) {
         item.addEventListener("click",
-            function(event) {
+            function (event) {
                 event.preventDefault();
                 var language = item.id.split("/")[0].slice(0, -4);
                 window.localStorage.setItem("locale", language);

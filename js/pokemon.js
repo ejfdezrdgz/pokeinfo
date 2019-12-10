@@ -1,11 +1,11 @@
 export class Pokemon {
-    constructor(id, name, img, types, stats) {
+    constructor(id, url, name, img, types, stats) {
         this.id = id;
+        this.url = url;
         this.name = name;
         this.img = img;
         this.types = types;
         this.stats = stats;
-        this.loc_names = { "de": "", "en": "", "es": "" };
     }
 
     getTypes() {

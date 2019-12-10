@@ -1,7 +1,6 @@
-import { Pokemon } from "./pokemon.js";
-import { pk_num, storage, searchBar, genSels, orderSel, sortDir, orderCheck, typeSels, cardModal, section, RANGEDIC, TYPE_COLORS, API_URL, API_URL_SPECIES, API_URL_POKELIST, initModalOffFunction, LANGUAGES } from "./init.js";
-import { loc_code, languageSelector, loadLocalization, loadPokemonLocalization } from "./localizer.js";
-import { back_colors, sortPokemon, rangeCompress, rangePair, genParse } from "./functions.js";
+import { pk_num, storage, searchBar, genSels, orderSel, sortDir, orderCheck, typeSels, RANGEDIC, TYPE_COLORS, initModalOffFunction } from "./init.js";
+import { languageSelector, loadLocalization, loadPokemonLocalization } from "./localizer.js";
+import { rangeCompress, rangePair, initializePokemonList, fillPokemonBasicInfo, fillPokemonExtraInfo, loadCardInfo } from "./functions.js";
 
 // if ('serviceWorker' in navigator) {
 //     navigator.serviceWorker.register('sw.js');
@@ -11,29 +10,31 @@ window.onload = function () {
     var gens = [];
     var range = [];
     var pk_list = [];
-    var url_sp = API_URL + API_URL_SPECIES;
-    var url_pk_list = API_URL + API_URL_POKELIST;
 
     if (storage.getItem("pkStrg") != null) {
-        var pkStrg = JSON.parse(storage.getItem("pkStrg"));
-        pkStrg.forEach(pokemon => {
-            var pk = new Pokemon(pokemon.id, pokemon.name, pokemon.img, pokemon.types, pokemon.stats);
-            if (pokemon["description"] != undefined) pk.setDescription(pokemon.description);
-            if (pokemon["evolChain"] != undefined) pk.setEvolChain(pokemon.evolChain);
-            if (pokemon["loc_names"] != undefined) pk.setLocNames(pokemon.loc_names);
-            pk_list.push(pk);
-        });
-        loadCardInfo(pk_list);
+        // var pkStrg = JSON.parse(storage.getItem("pkStrg"));
+        // pkStrg.forEach(pokemon => {
+        //     var pk = new Pokemon(pokemon.id, pokemon.url, pokemon.name, pokemon.img, pokemon.types, pokemon.stats);
+        //     if (pokemon["description"] != undefined) pk.setDescription(pokemon.description);
+        //     if (pokemon["evolChain"] != undefined) pk.setEvolChain(pokemon.evolChain);
+        //     if (pokemon["loc_names"] != undefined) pk.setLocNames(pokemon.loc_names);
+        //     pk_list.push(pk);
+        // });
+        // loadCardInfo(pk_list);
     } else {
-        var xml = new XMLHttpRequest();
-        xml.open("GET", url_pk_list, true);
-        xml.send(null);
-        xml.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var r = JSON.parse(this.response);
-                loadPokemonInfoOnStorage(r.results.slice(0, pk_num));
-            }
-        }
+        initializePokemonList(pk_list, pk_num);
+        fillPokemonBasicInfo(pk_list);
+        fillPokemonExtraInfo(pk_list);
+
+        // var xml = new XMLHttpRequest();
+        // xml.open("GET", url_pk_list, true);
+        // xml.send(null);
+        // xml.onreadystatechange = function () {
+        //     if (this.readyState == 4 && this.status == 200) {
+        //         var r = JSON.parse(this.response);
+        //         loadPokemonInfoOnStorage(r.results.slice(0, pk_num));
+        //     }
+        // }
     }
 
     typeSels.forEach(selector => {
@@ -141,56 +142,6 @@ window.onload = function () {
         return 0;
     }
 
-    function eventCard(evt) {
-        var id = evt.currentTarget.id.slice(6);
-        var pokemon = pk_list.filter(pk => {
-            if (pk.id == id) return true;
-        })[0]
-        if (pokemon["evolChain"] != undefined) {
-            buildModal(pokemon);
-        } else {
-            var xmlobj = new XMLHttpRequest();
-            var url = url_sp + id + "/";
-            xmlobj.open("GET", url, true);
-            xmlobj.send(null);
-            xmlobj.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var pkInfo = JSON.parse(this.response);
-                    var dList = pkInfo.flavor_text_entries.filter(d => {
-                        if (d.language.name == loc_code) return true;
-                    })
-                    // pokemon.name = pkInfo.names.filter(n => {
-                    //     if (n.language.name == loc_code) return true;
-                    // })[0].name;
-                    pokemon.setDescription(dList);
-
-                    var xmlevol = new XMLHttpRequest();
-                    url = pkInfo.evolution_chain.url;
-                    xmlevol.open("GET", url, true);
-                    xmlevol.send(null);
-                    xmlevol.onreadystatechange = function () {
-                        if (this.readyState == 4 && this.status == 200) {
-                            var evolData = JSON.parse(this.response)["chain"];
-                            if (evolData != undefined) {
-                                var evolChain = [];
-                                while (evolData["evolves_to"].length > 0) {
-                                    evolChain.push(evolData["species"]["name"]);
-                                    if (evolData["evolves_to"].length > 0) {
-                                        evolData = evolData["evolves_to"][0];
-                                    }
-                                }
-                                evolChain.push(evolData["species"]["name"]);
-                                pokemon.setEvolChain(evolChain);
-                                storage.setItem("pkStrg", JSON.stringify(pk_list));
-                                buildModal(pokemon);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     function toggleGenButton(evt) {
         var sel = evt.currentTarget;
         if (sel.className == "genSel genSelOn") {
@@ -219,224 +170,5 @@ window.onload = function () {
         range = rangeCompress(range);
         range = rangePair(range);
         filterPk();
-    }
-
-    function buildModal(pokemon) {
-        cardModal.style.display = "block";
-        document.getElementById("detailCard").innerHTML = "";
-        document.getElementById("detailCard").appendChild(htmlModal(pokemon));
-    }
-
-    function htmlModal(pokemon) {
-        var content = document.createElement("div");
-        content.className = "modalCont";
-        var header = document.createElement("div");
-        header.className = "modalHeader";
-        var body = document.createElement("div");
-        var card = document.createElement("article");
-        card.style = back_colors(pokemon);
-        card.className = "modalCard";
-        var separator = document.createElement("hr");
-        var p = document.createElement("p");
-        p.innerText = pokemon.name;
-        var img = document.createElement("img");
-        img.src = pokemon.img;
-        var stats = document.createElement("div");
-        stats.className = "modalStats";
-        var evol = document.createElement("div");
-        evol.className = "modalEvol";
-        var ep = document.createElement("h4");
-        ep.id = "evolP";
-        ep.innerText = "Evolution chain";
-        evol.appendChild(ep);
-        var evolBody = document.createElement("div");
-        evolBody.className = "evolBody";
-        pokemon.evolChain.forEach(el => {
-            var p = document.createElement("p");
-            p.innerText = el;
-            var sep = document.createElement("p");
-            sep.innerText = "→";
-            evolBody.appendChild(p);
-            evolBody.appendChild(sep);
-        });
-        evolBody.removeChild(evolBody.lastChild);
-        evol.appendChild(evolBody);
-        var desc = document.createElement("div");
-        pokemon.description.forEach(d => {
-            var p = document.createElement("p");
-            var text = d.flavor_text.split("\n").join(" ");
-            p.innerText = text;
-            p.className = "descP"
-            desc.appendChild(p);
-        });
-        card.appendChild(img);
-        card.appendChild(p);
-        header.appendChild(card);
-        header.appendChild(stats);
-        header.appendChild(evol);
-        body.appendChild(desc);
-        content.appendChild(header);
-        content.appendChild(separator);
-        content.appendChild(body);
-        return content;
-    }
-
-    function loadPokemonList(pokelist) {
-        pokelist.forEach(pokemon => {
-            var xml = new XMLHttpRequest();
-            var url = pokemon.url;
-
-            xml.open("GET", url, true);
-            xml.send();
-            xml.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var rp = JSON.parse(this.response);
-                    var types = {};
-                    rp.types.forEach(el => {
-                        if (el.slot == 1) {
-                            types["primary"] = el.type.name;
-                        } else if (el.slot == 2) {
-                            types["secondary"] = el.type.name;
-                        }
-                    });
-                    var stats = {};
-                    rp.stats.forEach(el => {
-                        stats[el.stat.name] = el.base_stat
-                    });
-                    var pk = new Pokemon(rp.id, rp.name, rp.sprites.front_default, types, stats);
-                    pk_list.push(pk);
-
-                    if (pk_list.length >= pk_num) {
-                        loadCardInfo(pk_list.sort(sortPokemon));
-                        storage.setItem("pkStrg", JSON.stringify(pk_list));
-                    }
-                }
-            }
-        });
-    }
-
-    function loadPokemonNames(pokelist) {
-        pokelist.forEach(pokemon => {
-            var xml = new XMLHttpRequest();
-            var id = pokemon.url.split("pokemon/")[1].slice(0, -1);
-            var url = url_sp + id;
-
-            xml.open("GET", url, true);
-            xml.send();
-            xml.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var rp = JSON.parse(this.response);
-                    rp.names.forEach(item => {
-                        LANGUAGES.forEach(lang => {
-                            if (item.language.name == lang) {
-                                pk_list[id - 1].loc_names[lang] = item.name;
-                            }
-                        })
-                    })
-
-                    if (pk_list.length >= pk_num) {
-                        storage.setItem("pkStrg", JSON.stringify(pk_list));
-                    }
-                }
-            }
-        })
-    }
-
-    function loadPokemonInfoOnStorage(pokelist) {
-        pokelist.forEach(pokemon => {
-            var xml = new XMLHttpRequest();
-            var url = pokemon.url;
-            var list = pk_list;
-
-            xml.open("GET", url, true);
-            xml.send();
-            xml.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var r1 = JSON.parse(this.response);
-
-                    console.log(r1);
-
-                    var types = {};
-                    r1.types.forEach(el => {
-                        if (el.slot == 1) {
-                            types["primary"] = el.type.name;
-                        } else if (el.slot == 2) {
-                            types["secondary"] = el.type.name;
-                        }
-                    });
-
-                    var stats = {};
-                    r1.stats.forEach(el => {
-                        stats[el.stat.name] = el.base_stat;
-                    });
-
-                    var pk = new Pokemon(r1.id, r1.name, r1.sprites.front_default, types, stats);
-                    list.push(pk);
-
-                    getPokeLocNames(pokelist, r1);
-                }
-            }
-        })
-    }
-
-    function getPokeLocNames(pokelist, r1) {
-        pokelist.forEach(pokemon => {
-            var xml2 = new XMLHttpRequest();
-            var url2 = url_sp + pokemon.name;
-            var list = pk_list;
-
-            xml2.open("GET", url2, true);
-            xml2.send();
-            xml2.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var r2 = JSON.parse(this.response);
-                    // console.log(r2);
-
-                    r2.names.forEach(item => {
-                        LANGUAGES.forEach(lang => {
-                            if (item.language.name == lang) {
-                                list[r1.id - 1].loc_names[lang] = item.name;
-                            }
-                        })
-                    })
-                    // console.log(list);
-
-
-                    if (pk_list.length >= pk_num) {
-                        loadCardInfo(pk_list.sort(sortPokemon));
-                        storage.setItem("pkStrg", JSON.stringify(pk_list));
-                    }
-                    // console.log(list[r1.id].loc_names["en"] + " " + pk_list.length + " " + pk_num);
-                }
-            }
-        })
-    }
-
-    function loadCardInfo(list) {
-        section.innerHTML = "";
-        document.getElementsByClassName("loader")[0].setAttribute("style", "display: none");
-        list.forEach(pokemon => {
-            var card = document.createElement("article");
-            card.onclick = eventCard;
-            card.id = "pkcard" + pokemon.id;
-            card.className = "tooltip mainArticle";
-            card.style = back_colors(pokemon);
-            var idCorner = document.createElement("div");
-            idCorner.innerHTML = pokemon.id;
-            idCorner.className = "cardCorner cardIdCorner";
-            var genCorner = document.createElement("div");
-            genCorner.innerHTML = genParse(pokemon);
-            genCorner.className = "cardCorner cardGenCorner";
-            var p = document.createElement("p");
-            p.innerText = pokemon.loc_names[loc_code];
-            p.className = "cardPokeName";
-            var img = document.createElement("img");
-            img.src = pokemon.img;
-            card.appendChild(img);
-            card.appendChild(p);
-            card.appendChild(idCorner);
-            card.appendChild(genCorner);
-            section.appendChild(card);
-        })
     }
 }

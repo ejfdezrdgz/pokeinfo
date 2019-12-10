@@ -1,4 +1,6 @@
-import { TYPE_BACK, TYPE_COLORS, RANGEDIC } from "./init.js";
+import { Pokemon } from "./pokemon.js";
+import { loc_code } from "./localizer.js";
+import { TYPE_BACK, TYPE_COLORS, RANGEDIC, API_URL, API_URL_POKE, API_URL_SPECIES, LANGUAGES, pk_num, storage, section, cardModal } from "./init.js";
 
 export function back_colors(pk) {
     var style = TYPE_BACK;
@@ -64,4 +66,248 @@ export function genParse(pk) {
             }
         }
     }
+}
+
+export function initializePokemonList(list, num) {
+    for (let i = 0; i < num; i++) {
+        var pokemon = new Pokemon(i + 1, "", "", "", {}, {});
+        list.push(pokemon);
+    }
+}
+
+export function fillPokemonBasicInfo(pk_list) {
+    pk_list.forEach(pokemon => {
+        var xml = new XMLHttpRequest();
+        var url = API_URL + API_URL_POKE + pokemon.id;
+        var list = pk_list;
+
+        xml.open("GET", url, true);
+        xml.send();
+        xml.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var r = JSON.parse(this.response);
+
+                var types = {};
+                r.types.forEach(el => {
+                    if (el.slot == 1) {
+                        types["primary"] = el.type.name;
+                    } else if (el.slot == 2) {
+                        types["secondary"] = el.type.name;
+                    }
+                });
+
+                var stats = {};
+                r.stats.forEach(el => {
+                    stats[el.stat.name] = el.base_stat;
+                });
+
+                var abilities = [];
+                r.abilities.forEach(function (el, index) {
+                    abilities[index] = {};
+                    abilities[index]["slot"] = el.slot;
+                    abilities[index]["is_hidden"] = el.is_hidden;
+                    abilities[index]["ability"] = {};
+                    abilities[index]["ability"]["name"] = el.ability.name;
+                    abilities[index]["ability"]["url"] = el.ability.url;
+                });
+
+                list.find(function (el) {
+                    if (el["id"] == pokemon.id) {
+                        el["url"] = url;
+                        el["img"] = r.sprites.front_default;
+                        el["name"] = r.name;
+                        el["types"] = types;
+                        el["stats"] = stats;
+                        el["height"] = r.height;
+                        el["base_exp"] = r.base_experience;
+                        el["abilities"] = abilities;
+                    }
+                });
+            }
+        }
+    });
+}
+
+export function fillPokemonExtraInfo(pk_list) {
+    pk_list.forEach(pokemon => {
+        var xml = new XMLHttpRequest();
+        var url = API_URL + API_URL_SPECIES + pokemon.id;
+        var list = pk_list;
+
+        xml.open("GET", url, true);
+        xml.send();
+        xml.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var r = JSON.parse(this.response);
+                console.log(r);
+
+                var loc_names = {};
+                r.names.forEach(item => {
+                    LANGUAGES.forEach(lang => {
+                        if (item.language.name == lang) {
+                            loc_names[lang] = item.name;
+                        }
+                    });
+                });
+
+                list.find(function (el) {
+                    if (el["id"] == pokemon.id) {
+                        el["loc_names"] = loc_names;
+                        console.log(el);
+                    }
+                });
+
+                // if (pk_list.length >= pk_num) {
+                //     loadCardInfo(pk_list.sort(sortPokemon));
+                //     storage.setItem("pkStrg", JSON.stringify(pk_list));
+                // }
+            }
+        }
+    });
+}
+
+export function savePokemonList(pk_list) {
+    // TODO save list on finish loading data
+    // if (pk_list.length >= pk_num) {
+    //     loadCardInfo(pk_list.sort(sortPokemon));
+    //     storage.setItem("pkStrg", JSON.stringify(pk_list));
+    // }
+}
+
+export function loadCardInfo(list) {
+    section.innerHTML = "";
+    document.getElementsByClassName("loader")[0].setAttribute("style", "display: none");
+    list.forEach(pokemon => {
+        var card = document.createElement("article");
+        card.onclick = eventCard;
+        card.id = "pkcard" + pokemon.id;
+        card.className = "tooltip mainArticle";
+        card.style = back_colors(pokemon);
+        var idCorner = document.createElement("div");
+        idCorner.innerHTML = pokemon.id;
+        idCorner.className = "cardCorner cardIdCorner";
+        var genCorner = document.createElement("div");
+        genCorner.innerHTML = genParse(pokemon);
+        genCorner.className = "cardCorner cardGenCorner";
+        var p = document.createElement("p");
+        p.innerText = pokemon.loc_names[loc_code];
+        p.className = "cardPokeName";
+        var img = document.createElement("img");
+        img.src = pokemon.img;
+        card.appendChild(img);
+        card.appendChild(p);
+        card.appendChild(idCorner);
+        card.appendChild(genCorner);
+        section.appendChild(card);
+    })
+}
+
+export function eventCard(evt) {
+    var id = evt.currentTarget.id.slice(6);
+    var pokemon = pk_list.filter(pk => {
+        if (pk.id == id) return true;
+    })[0]
+    if (pokemon["evolChain"] != undefined) {
+        buildModal(pokemon);
+    } else {
+        var xmlobj = new XMLHttpRequest();
+        var url = url_sp + id + "/";
+        xmlobj.open("GET", url, true);
+        xmlobj.send(null);
+        xmlobj.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var pkInfo = JSON.parse(this.response);
+                var dList = pkInfo.flavor_text_entries.filter(d => {
+                    if (d.language.name == loc_code) return true;
+                })
+                // pokemon.name = pkInfo.names.filter(n => {
+                //     if (n.language.name == loc_code) return true;
+                // })[0].name;
+                pokemon.setDescription(dList);
+
+                var xmlevol = new XMLHttpRequest();
+                url = pkInfo.evolution_chain.url;
+                xmlevol.open("GET", url, true);
+                xmlevol.send(null);
+                xmlevol.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var evolData = JSON.parse(this.response)["chain"];
+                        if (evolData != undefined) {
+                            var evolChain = [];
+                            while (evolData["evolves_to"].length > 0) {
+                                evolChain.push(evolData["species"]["name"]);
+                                if (evolData["evolves_to"].length > 0) {
+                                    evolData = evolData["evolves_to"][0];
+                                }
+                            }
+                            evolChain.push(evolData["species"]["name"]);
+                            pokemon.setEvolChain(evolChain);
+                            storage.setItem("pkStrg", JSON.stringify(pk_list));
+                            buildModal(pokemon);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+export function buildModal(pokemon) {
+    cardModal.style.display = "block";
+    document.getElementById("detailCard").innerHTML = "";
+    document.getElementById("detailCard").appendChild(htmlModal(pokemon));
+}
+
+export function htmlModal(pokemon) {
+    var content = document.createElement("div");
+    content.className = "modalCont";
+    var header = document.createElement("div");
+    header.className = "modalHeader";
+    var body = document.createElement("div");
+    var card = document.createElement("article");
+    card.style = back_colors(pokemon);
+    card.className = "modalCard";
+    var separator = document.createElement("hr");
+    var p = document.createElement("p");
+    p.innerText = pokemon.name;
+    var img = document.createElement("img");
+    img.src = pokemon.img;
+    var stats = document.createElement("div");
+    stats.className = "modalStats";
+    var evol = document.createElement("div");
+    evol.className = "modalEvol";
+    var ep = document.createElement("h4");
+    ep.id = "evolP";
+    ep.innerText = "Evolution chain";
+    evol.appendChild(ep);
+    var evolBody = document.createElement("div");
+    evolBody.className = "evolBody";
+    pokemon.evolChain.forEach(el => {
+        var p = document.createElement("p");
+        p.innerText = el;
+        var sep = document.createElement("p");
+        sep.innerText = "→";
+        evolBody.appendChild(p);
+        evolBody.appendChild(sep);
+    });
+    evolBody.removeChild(evolBody.lastChild);
+    evol.appendChild(evolBody);
+    var desc = document.createElement("div");
+    pokemon.description.forEach(d => {
+        var p = document.createElement("p");
+        var text = d.flavor_text.split("\n").join(" ");
+        p.innerText = text;
+        p.className = "descP"
+        desc.appendChild(p);
+    });
+    card.appendChild(img);
+    card.appendChild(p);
+    header.appendChild(card);
+    header.appendChild(stats);
+    header.appendChild(evol);
+    body.appendChild(desc);
+    content.appendChild(header);
+    content.appendChild(separator);
+    content.appendChild(body);
+    return content;
 }
