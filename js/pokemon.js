@@ -5,7 +5,7 @@ export class Pokemon {
         this.img = img;
         this.types = types;
         this.stats = stats;
-        this.loc_names = { "de": "", "en": "", "es": "" }
+        this.loc_names = { "de": "", "en": "", "es": "" };
     }
 
     getTypes() {
@@ -24,6 +24,10 @@ export class Pokemon {
             stats += key + ": " + this.stats[key] + "<br>";
         }
         return stats;
+    }
+
+    setLocNames(loc_names) {
+        this.loc_names = loc_names;
     }
 
     setEvolChain(evolChain) {

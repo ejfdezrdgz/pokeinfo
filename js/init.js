@@ -42,6 +42,7 @@ export var API_URL_GEN = "generation/";
 export var API_URL_SPECIES = "pokemon-species/";
 export var API_URL_POKELIST = "pokemon/?limit=1000";
 export var API_URL_EVOCHAIN = "evolution-chain/";
+export var LANGUAGES = ["de", "en", "es"];
 
 var locale = storage.getItem("locale");
 if (locale == null || locale == undefined || locale == "") {
