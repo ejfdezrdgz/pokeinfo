@@ -1,6 +1,6 @@
 import { pk_num, storage, searchBar, genSels, orderSel, sortDir, orderCheck, typeSels, RANGEDIC, TYPE_COLORS, initModalOffFunction } from "./init.js";
 import { languageSelector, loadLocalization, loadPokemonLocalization } from "./localizer.js";
-import { rangeCompress, rangePair, initializePokemonList, fillPokemonBasicInfo, fillPokemonExtraInfo, loadCardInfo } from "./functions.js";
+import { rangeCompress, rangePair, initializePokemonList, fillPokemonBasicInfo, fillPokemonExtraInfo, loadCardInfo, loadVaultedInfo } from "./functions.js";
 
 // if ('serviceWorker' in navigator) {
 //     navigator.serviceWorker.register('sw.js');
@@ -22,9 +22,14 @@ window.onload = function () {
         // });
         // loadCardInfo(pk_list);
     } else {
+        // Promise.resolve()
+        //     .then(initializePokemonList(pk_list, pk_num))
+        //     .then(fillPokemonBasicInfo(pk_list))
+        //     .then(fillPokemonExtraInfo(pk_list));
+
         initializePokemonList(pk_list, pk_num);
-        fillPokemonBasicInfo(pk_list);
-        fillPokemonExtraInfo(pk_list);
+        // fillPokemonBasicInfo(pk_list);
+        // fillPokemonExtraInfo(pk_list);
 
         // var xml = new XMLHttpRequest();
         // xml.open("GET", url_pk_list, true);

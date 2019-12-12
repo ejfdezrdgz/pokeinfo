@@ -2,10 +2,9 @@ import { storage } from "./init.js";
 
 const i18next = window.i18next;
 const Backend = window.i18nextXHRBackend;
-var localePath = "";
+var localePath = getLocalePath();
 
 export var loc_code = localizationCode();
-localePath = getLocalePath();
 
 export function loadLocalization() {
     i18next

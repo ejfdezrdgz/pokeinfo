@@ -1,5 +1,5 @@
 import { Pokemon } from "./pokemon.js";
-import { loc_code } from "./localizer.js";
+import { loc_code, localizationCode } from "./localizer.js";
 import { TYPE_BACK, TYPE_COLORS, RANGEDIC, API_URL, API_URL_POKE, API_URL_SPECIES, LANGUAGES, pk_num, storage, section, cardModal } from "./init.js";
 
 export function back_colors(pk) {
@@ -73,18 +73,19 @@ export function initializePokemonList(list, num) {
         var pokemon = new Pokemon(i + 1, "", "", "", {}, {});
         list.push(pokemon);
     }
+    fillPokemonBasicInfo(list);
 }
 
-export function fillPokemonBasicInfo(pk_list) {
-    pk_list.forEach(pokemon => {
+export async function fillPokemonBasicInfo(list) {
+    await list.forEach(pokemon => {
         var xml = new XMLHttpRequest();
         var url = API_URL + API_URL_POKE + pokemon.id;
-        var list = pk_list;
 
         xml.open("GET", url, true);
         xml.send();
         xml.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
+                console.log("BASIC");
                 var r = JSON.parse(this.response);
 
                 var types = {};
@@ -126,44 +127,82 @@ export function fillPokemonBasicInfo(pk_list) {
             }
         }
     });
+    fillPokemonExtraInfo(list);
 }
 
-export function fillPokemonExtraInfo(pk_list) {
-    pk_list.forEach(pokemon => {
-        var xml = new XMLHttpRequest();
-        var url = API_URL + API_URL_SPECIES + pokemon.id;
-        var list = pk_list;
+function a(list) {
+    return new Promise(resolve => {
+        list.forEach(pokemon => {
+            var xml = new XMLHttpRequest();
+            var url = API_URL + API_URL_SPECIES + pokemon.id;
 
-        xml.open("GET", url, true);
-        xml.send();
-        xml.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var r = JSON.parse(this.response);
-                console.log(r);
+            xml.open("GET", url, true);
+            xml.send();
+            xml.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log("EXTRA");
+                    var r = JSON.parse(this.response);
 
-                var loc_names = {};
-                r.names.forEach(item => {
+                    var loc_names = {};
+                    r.names.forEach(item => {
+                        LANGUAGES.forEach(lang => {
+                            if (item.language.name == lang) {
+                                loc_names[lang] = item.name;
+                            }
+                        });
+                    });
+
+                    var evol_from = null;
+                    if (r.evolves_from_species != null) {
+                        evol_from = r.evolves_from_species.name;
+                    }
+
+                    var flavor_text = {};
                     LANGUAGES.forEach(lang => {
-                        if (item.language.name == lang) {
-                            loc_names[lang] = item.name;
+                        flavor_text[lang] = {};
+                        r.flavor_text_entries.forEach(item => {
+                            if (item.language.name == lang) {
+                                flavor_text[lang][item.version.name] = item.flavor_text;
+                            }
+                        })
+                    })
+
+                    var genera = {};
+                    LANGUAGES.forEach(lang => {
+                        genera[lang] = {};
+                        r.genera.forEach(item => {
+                            if (item.language.name == lang) {
+                                genera[lang] = item.genus;
+                            }
+                        })
+                    })
+
+                    list.find(function (el) {
+                        if (el["id"] == pokemon.id) {
+                            el["genera"] = genera;
+                            el["base_hap"] = r.base_happiness;
+                            el["loc_names"] = loc_names;
+                            el["evol_from"] = evol_from;
+                            el["flavor_text"] = flavor_text;
+                            el["evol_chain_id"] = parseInt(r.evolution_chain.url.split("/")[6]);
                         }
                     });
-                });
-
-                list.find(function (el) {
-                    if (el["id"] == pokemon.id) {
-                        el["loc_names"] = loc_names;
-                        console.log(el);
-                    }
-                });
-
-                // if (pk_list.length >= pk_num) {
-                //     loadCardInfo(pk_list.sort(sortPokemon));
-                //     storage.setItem("pkStrg", JSON.stringify(pk_list));
-                // }
+                }
             }
-        }
-    });
+        })
+        resolve();
+    })
+}
+
+export async function fillPokemonExtraInfo(list) {
+    await a(list);
+    loadVaultedInfo(list);
+}
+
+export function loadVaultedInfo(list) {
+    console.log("LOAD");
+    loadCardInfo(list.sort(sortPokemon));
+    storage.setItem("pkStrg", JSON.stringify(list));
 }
 
 export function savePokemonList(pk_list) {
