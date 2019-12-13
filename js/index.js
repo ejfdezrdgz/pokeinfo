@@ -1,6 +1,6 @@
 import { pk_num, storage, searchBar, genSels, orderSel, sortDir, orderCheck, typeSels, RANGEDIC, TYPE_COLORS, initModalOffFunction } from "./init.js";
 import { languageSelector, loadLocalization, loadPokemonLocalization } from "./localizer.js";
-import { rangeCompress, rangePair, initializePokemonList, fillPokemonBasicInfo, fillPokemonExtraInfo, loadCardInfo, loadVaultedInfo } from "./functions.js";
+import { rangeCompress, rangePair, fillPokemonInfo, loadCardInfo } from "./functions.js";
 
 // if ('serviceWorker' in navigator) {
 //     navigator.serviceWorker.register('sw.js');
@@ -22,12 +22,46 @@ window.onload = function () {
         // });
         // loadCardInfo(pk_list);
     } else {
+        fillPokemonInfo(pk_list, pk_num);
+        
+        // const fruitBasket = {
+        //     apple: 27,
+        //     grape: 0,
+        //     pear: 14
+        // }
+
+        // const sleep = ms => {
+        //     return new Promise(resolve => setTimeout(resolve, ms))
+        // }
+
+        // const getNumFruit = fruit => {
+        //     return sleep(1000).then(v => fruitBasket[fruit])
+        // }
+
+        // async function control() {
+        //     console.log('Start')
+
+        //     const numApples = await getNumFruit('apple')
+        //     console.log(numApples)
+
+        //     const numGrapes = await getNumFruit('grape')
+        //     console.log(numGrapes)
+
+        //     const numPears = await getNumFruit('pear')
+        //     console.log(numPears)
+
+        //     console.log('End')
+        // }
+
+        // control();
+
         // Promise.resolve()
         //     .then(initializePokemonList(pk_list, pk_num))
         //     .then(fillPokemonBasicInfo(pk_list))
         //     .then(fillPokemonExtraInfo(pk_list));
 
-        initializePokemonList(pk_list, pk_num);
+        //        initializePokemonList(pk_list, pk_num);
+
         // fillPokemonBasicInfo(pk_list);
         // fillPokemonExtraInfo(pk_list);
 

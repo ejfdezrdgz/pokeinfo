@@ -68,71 +68,89 @@ export function genParse(pk) {
     }
 }
 
-export function initializePokemonList(list, num) {
-    for (let i = 0; i < num; i++) {
-        var pokemon = new Pokemon(i + 1, "", "", "", {}, {});
-        list.push(pokemon);
-    }
-    fillPokemonBasicInfo(list);
+export function fillPokemonInfo(list, num) {
+    initializePokemonList(list, num)
+        .then(fillPokemonBasicInfo(list))
+        .then(fillPokemonExtraInfo(list))
+        .then(loadVaultedInfo(list));
+    // https://lavrton.com/javascript-loops-how-to-handle-async-await-6252dd3c795/
+    // https://css-tricks.com/why-using-reduce-to-sequentially-resolve-promises-works/
+    // https://css-tricks.com/understanding-the-almighty-reducer/
 }
 
-export async function fillPokemonBasicInfo(list) {
-    await list.forEach(pokemon => {
-        var xml = new XMLHttpRequest();
-        var url = API_URL + API_URL_POKE + pokemon.id;
-
-        xml.open("GET", url, true);
-        xml.send();
-        xml.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                console.log("BASIC");
-                var r = JSON.parse(this.response);
-
-                var types = {};
-                r.types.forEach(el => {
-                    if (el.slot == 1) {
-                        types["primary"] = el.type.name;
-                    } else if (el.slot == 2) {
-                        types["secondary"] = el.type.name;
-                    }
-                });
-
-                var stats = {};
-                r.stats.forEach(el => {
-                    stats[el.stat.name] = el.base_stat;
-                });
-
-                var abilities = [];
-                r.abilities.forEach(function (el, index) {
-                    abilities[index] = {};
-                    abilities[index]["slot"] = el.slot;
-                    abilities[index]["is_hidden"] = el.is_hidden;
-                    abilities[index]["ability"] = {};
-                    abilities[index]["ability"]["name"] = el.ability.name;
-                    abilities[index]["ability"]["url"] = el.ability.url;
-                });
-
-                list.find(function (el) {
-                    if (el["id"] == pokemon.id) {
-                        el["url"] = url;
-                        el["img"] = r.sprites.front_default;
-                        el["name"] = r.name;
-                        el["types"] = types;
-                        el["stats"] = stats;
-                        el["height"] = r.height;
-                        el["base_exp"] = r.base_experience;
-                        el["abilities"] = abilities;
-                    }
-                });
-            }
+function initializePokemonList(list, num) {
+    return new Promise(function (resolve) {
+        for (let i = 0; i < num; i++) {
+            var pokemon = new Pokemon(i + 1, "", "", "", {}, {});
+            list.push(pokemon);
         }
-    });
-    fillPokemonExtraInfo(list);
+        resolve();
+    })
+
 }
 
-function a(list) {
-    return new Promise(resolve => {
-        list.forEach(pokemon => {
+function fillPokemonBasicInfo(list) {
+    return new Promise(function (resolve) {
+        list.forEach((pokemon, index) => {
+            var xml = new XMLHttpRequest();
+            var url = API_URL + API_URL_POKE + pokemon.id;
+
+            xml.open("GET", url, true);
+            xml.send();
+            xml.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var r = JSON.parse(this.response);
+
+                    var types = {};
+                    r.types.forEach(el => {
+                        if (el.slot == 1) {
+                            types["primary"] = el.type.name;
+                        } else if (el.slot == 2) {
+                            types["secondary"] = el.type.name;
+                        }
+                    });
+
+                    var stats = {};
+                    r.stats.forEach(el => {
+                        stats[el.stat.name] = el.base_stat;
+                    });
+
+                    var abilities = [];
+                    r.abilities.forEach(function (el, index) {
+                        abilities[index] = {};
+                        abilities[index]["slot"] = el.slot;
+                        abilities[index]["is_hidden"] = el.is_hidden;
+                        abilities[index]["ability"] = {};
+                        abilities[index]["ability"]["name"] = el.ability.name;
+                        abilities[index]["ability"]["url"] = el.ability.url;
+                    });
+
+                    list.find(function (el) {
+                        if (el["id"] == pokemon.id) {
+                            el["url"] = url;
+                            el["img"] = r.sprites.front_default;
+                            el["name"] = r.name;
+                            el["types"] = types;
+                            el["stats"] = stats;
+                            el["height"] = r.height;
+                            el["base_exp"] = r.base_experience;
+                            el["abilities"] = abilities;
+                        }
+                    })
+
+                    if (index >= list.length - 0) {
+                        resolve();
+                        // return list;
+                    }
+                }
+            }
+        })
+    })
+}
+
+function fillPokemonExtraInfo(list) {
+    return new Promise(function (resolve) {
+        list.forEach((pokemon, index) => {
             var xml = new XMLHttpRequest();
             var url = API_URL + API_URL_SPECIES + pokemon.id;
 
@@ -140,7 +158,6 @@ function a(list) {
             xml.send();
             xml.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    console.log("EXTRA");
                     var r = JSON.parse(this.response);
 
                     var loc_names = {};
@@ -186,31 +203,25 @@ function a(list) {
                             el["flavor_text"] = flavor_text;
                             el["evol_chain_id"] = parseInt(r.evolution_chain.url.split("/")[6]);
                         }
-                    });
+                    })
+
+                    if (index >= list.length - 0) {
+                        resolve();
+                        // return list;
+                    }
                 }
             }
         })
+    })
+
+}
+
+function loadVaultedInfo(list) {
+    return new Promise(function (resolve) {
+        loadCardInfo(list.sort(sortPokemon));
+        storage.setItem("pkStrg", JSON.stringify(list));
         resolve();
     })
-}
-
-export async function fillPokemonExtraInfo(list) {
-    await a(list);
-    loadVaultedInfo(list);
-}
-
-export function loadVaultedInfo(list) {
-    console.log("LOAD");
-    loadCardInfo(list.sort(sortPokemon));
-    storage.setItem("pkStrg", JSON.stringify(list));
-}
-
-export function savePokemonList(pk_list) {
-    // TODO save list on finish loading data
-    // if (pk_list.length >= pk_num) {
-    //     loadCardInfo(pk_list.sort(sortPokemon));
-    //     storage.setItem("pkStrg", JSON.stringify(pk_list));
-    // }
 }
 
 export function loadCardInfo(list) {
