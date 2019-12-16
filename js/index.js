@@ -1,6 +1,6 @@
 import { pk_num, storage, searchBar, genSels, orderSel, sortDir, orderCheck, typeSels, RANGEDIC, TYPE_COLORS, initModalOffFunction } from "./init.js";
 import { languageSelector, loadLocalization, loadPokemonLocalization } from "./localizer.js";
-import { rangeCompress, rangePair, fillPokemonInfo, loadCardInfo } from "./functions.js";
+import { rangeCompress, rangePair, loadCardInfo, savePokemonInfo, initializePokemonList, fillPokemonBasicInfo, fillPokemonExtraInfo } from "./functions.js";
 
 // if ('serviceWorker' in navigator) {
 //     navigator.serviceWorker.register('sw.js');
@@ -12,68 +12,15 @@ window.onload = function () {
     var pk_list = [];
 
     if (storage.getItem("pkStrg") != null) {
-        // var pkStrg = JSON.parse(storage.getItem("pkStrg"));
-        // pkStrg.forEach(pokemon => {
-        //     var pk = new Pokemon(pokemon.id, pokemon.url, pokemon.name, pokemon.img, pokemon.types, pokemon.stats);
-        //     if (pokemon["description"] != undefined) pk.setDescription(pokemon.description);
-        //     if (pokemon["evolChain"] != undefined) pk.setEvolChain(pokemon.evolChain);
-        //     if (pokemon["loc_names"] != undefined) pk.setLocNames(pokemon.loc_names);
-        //     pk_list.push(pk);
-        // });
-        // loadCardInfo(pk_list);
+        loadCardInfo("full");
     } else {
-        fillPokemonInfo(pk_list, pk_num);
-        
-        // const fruitBasket = {
-        //     apple: 27,
-        //     grape: 0,
-        //     pear: 14
-        // }
-
-        // const sleep = ms => {
-        //     return new Promise(resolve => setTimeout(resolve, ms))
-        // }
-
-        // const getNumFruit = fruit => {
-        //     return sleep(1000).then(v => fruitBasket[fruit])
-        // }
-
-        // async function control() {
-        //     console.log('Start')
-
-        //     const numApples = await getNumFruit('apple')
-        //     console.log(numApples)
-
-        //     const numGrapes = await getNumFruit('grape')
-        //     console.log(numGrapes)
-
-        //     const numPears = await getNumFruit('pear')
-        //     console.log(numPears)
-
-        //     console.log('End')
-        // }
-
-        // control();
-
-        // Promise.resolve()
-        //     .then(initializePokemonList(pk_list, pk_num))
-        //     .then(fillPokemonBasicInfo(pk_list))
-        //     .then(fillPokemonExtraInfo(pk_list));
-
-        //        initializePokemonList(pk_list, pk_num);
-
-        // fillPokemonBasicInfo(pk_list);
-        // fillPokemonExtraInfo(pk_list);
-
-        // var xml = new XMLHttpRequest();
-        // xml.open("GET", url_pk_list, true);
-        // xml.send(null);
-        // xml.onreadystatechange = function () {
-        //     if (this.readyState == 4 && this.status == 200) {
-        //         var r = JSON.parse(this.response);
-        //         loadPokemonInfoOnStorage(r.results.slice(0, pk_num));
-        //     }
-        // }
+        var infoFetch = Promise.resolve();
+        infoFetch
+            .then(initializePokemonList(pk_list, pk_num))
+            .then(fillPokemonBasicInfo(pk_list))
+            .then(fillPokemonExtraInfo(pk_list))
+            // .then(savePokemonInfo(pk_list))
+            // .then(loadCardInfo("partial", pk_list));
     }
 
     typeSels.forEach(selector => {
@@ -135,7 +82,7 @@ window.onload = function () {
         } else {
             filteredList = pk_list;
         }
-        loadCardInfo(filteredList.filter(pokemon => {
+        loadCardInfo("partial", filteredList.filter(pokemon => {
             if (orderCheck.checked == true) {
                 if (type1 == "any" && type2 == "any") {
                     return true;
