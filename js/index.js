@@ -14,13 +14,12 @@ window.onload = function () {
     if (storage.getItem("pkStrg") != null) {
         loadCardInfo("full");
     } else {
-        var infoFetch = Promise.resolve();
-        infoFetch
-            .then(initializePokemonList(pk_list, pk_num))
-            .then(fillPokemonBasicInfo(pk_list))
-            .then(fillPokemonExtraInfo(pk_list))
-            // .then(savePokemonInfo(pk_list))
-            // .then(loadCardInfo("partial", pk_list));
+        new Promise(resolve => resolve())
+            .then(() => initializePokemonList(pk_list, pk_num))
+            .then(() => fillPokemonBasicInfo(pk_list))
+            .then(() => fillPokemonExtraInfo(pk_list))
+            .then(() => savePokemonInfo(pk_list))
+            .then(() => loadCardInfo("partial", pk_list));
     }
 
     typeSels.forEach(selector => {

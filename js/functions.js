@@ -68,32 +68,20 @@ export function genParse(pk) {
     }
 }
 
-export function fillPokemonInfo(list, num) {
-    initializePokemonList(list, num);
-    fillPokemonBasicInfo(list);
-    fillPokemonExtraInfo(list);
-    // setTimeout(() => { savePokemonInfo(list); }, 4000);
-    // setTimeout(() => { loadCardInfo(list.sort(sortPokemon)); }, 5000);
-}
-
 export function initializePokemonList(list, num) {
     return new Promise(function (resolve) {
         for (let i = 0; i < num; i++) {
-            console.log("INIT");
-
             var pokemon = new Pokemon(i + 1, "", "", "", {}, {});
             list.push(pokemon);
         }
-        console.log(Date.now());
         resolve();
     })
 }
 
 export function fillPokemonBasicInfo(list) {
     return new Promise(function (resolve) {
+        var index = 0;
         for (const pokemon of list) {
-            console.log("BASIC");
-
             var xml = new XMLHttpRequest();
             var url = API_URL + API_URL_POKE + pokemon.id;
 
@@ -139,19 +127,23 @@ export function fillPokemonBasicInfo(list) {
                             el["abilities"] = abilities;
                         }
                     })
+
+                    if (index >= list.length - 1) {
+                        resolve();
+                    } else {
+                        index++;
+                    }
                 }
             }
         }
-        console.log(Date.now());
-        resolve();
     })
+
 }
 
 export function fillPokemonExtraInfo(list) {
     return new Promise(function (resolve) {
+        var index = 0;
         for (const pokemon of list) {
-            console.log("EXTRA");
-
             var xml = new XMLHttpRequest();
             var url = API_URL + API_URL_SPECIES + pokemon.id;
 
@@ -205,23 +197,26 @@ export function fillPokemonExtraInfo(list) {
                             el["evol_chain_id"] = parseInt(r.evolution_chain.url.split("/")[6]);
                         }
                     })
+
+                    if (index >= list.length - 1) {
+                        resolve();
+                    } else {
+                        index++;
+                    }
                 }
             }
         }
-        console.log(Date.now());
-        resolve();
     })
 }
 
 export function savePokemonInfo(list) {
-    console.log("SAVE");
-    console.log(Date.now());
-
-    storage.setItem("pkStrg", JSON.stringify(list));
+    return new Promise(function (resolve) {
+        storage.setItem("pkStrg", JSON.stringify(list));
+        resolve();
+    })
 }
 
 export function loadCardInfo(type, out_list) {
-    console.log(Date.now());
     return new Promise(function (resolve) {
         var list = null;
         if (type == "full") {
@@ -231,9 +226,7 @@ export function loadCardInfo(type, out_list) {
         }
         section.innerHTML = "";
         document.getElementsByClassName("loader")[0].setAttribute("style", "display: none");
-        list.forEach(pokemon => {
-            console.log("LOAD");
-
+        for (const pokemon of list) {
             var card = document.createElement("article");
             card.onclick = eventCard;
             card.id = "pkcard" + pokemon.id;
@@ -247,8 +240,6 @@ export function loadCardInfo(type, out_list) {
             genCorner.className = "cardCorner cardGenCorner";
             var p = document.createElement("p");
             var loc_code = localizationCode();
-            console.log(pokemon);
-            console.log(loc_code);
             p.innerText = pokemon.loc_names[loc_code];
             var img = document.createElement("img");
             img.src = pokemon.img;
@@ -257,7 +248,7 @@ export function loadCardInfo(type, out_list) {
             card.appendChild(idCorner);
             card.appendChild(genCorner);
             section.appendChild(card);
-        })
+        }
         resolve();
     })
 }
