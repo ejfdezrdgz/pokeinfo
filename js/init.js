@@ -39,9 +39,12 @@ export var cardModal = document.getElementById('cardModal');
 export var section = document.getElementById("content");
 export var API_URL = "https://pokeapi.co/api/v2/";
 export var API_URL_GEN = "generation/";
+export var API_URL_POKE = "pokemon/";
 export var API_URL_SPECIES = "pokemon-species/";
 export var API_URL_POKELIST = "pokemon/?limit=1000";
 export var API_URL_EVOCHAIN = "evolution-chain/";
+export var LANGUAGES = ["de", "en", "es"];
+// export var LANGUAGES = ["de", "en", "es", "fr", "it", "ja", "ko", "zh-Hans"];
 
 var locale = storage.getItem("locale");
 if (locale == null || locale == undefined || locale == "") {
