@@ -15,8 +15,3 @@ There's a very high chance it's going to be eternally a WIP, because even if I e
 
 ## Other information
 I'm totally open to suggestions and/or complaints regarding a feature, style or translation (this last one even more so than the others, because I made my own dictionaries for this and, for example, I can't speak a word of German).
-
-## License
-None. Come on, is there a need for this to be licensed? I'm using already public sources and hereby liberate all of this code of mine for whoever deems it to be worthy of being replicated (although I don't think it's really worth that much) and for whatever purposes.
-
-It'd be nice of you to reach and just notify me, but I'm not your boss, so whatever.
